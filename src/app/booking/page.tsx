@@ -1,0 +1,100 @@
+import { client, urlFor } from "@/lib/sanity.client";
+import { groq } from "next-sanity";
+import { Metadata } from 'next';
+import { getServices } from "./actions";
+import BookingFlow from "./flow";
+
+export const dynamic = 'force-dynamic';
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
+
+async function getBookingPageData() {
+  return client.fetch(groq`*[_type == "page" && slug.current == "booking"][0]{
+    title,
+    subtitle,
+    seo {
+      metaTitle,
+      metaDescription,
+      keywords,
+      ogImage {
+        asset,
+        alt
+      },
+      canonicalUrl,
+      noIndex
+    }
+  }`);
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getBookingPageData();
+
+  const title = pageData?.seo?.metaTitle || pageData?.title || 'Időpontfoglalás - Mamivibe';
+  const description = pageData?.seo?.metaDescription || pageData?.subtitle || 'Foglalj időpontot szoptatási tanácsadásra vagy babaápolási oktatásra online.';
+  const keywords = pageData?.seo?.keywords || ['időpontfoglalás', 'szoptatási tanácsadás foglalás', 'naptár'];
+  const ogImage = pageData?.seo?.ogImage?.asset
+    ? urlFor(pageData.seo.ogImage).width(1200).height(630).url()
+    : undefined;
+
+  return {
+    title,
+    description,
+    keywords: keywords.join(', '),
+    alternates: {
+      canonical: pageData?.seo?.canonicalUrl || `${BASE_URL}/booking`,
+    },
+    robots: pageData?.seo?.noIndex ? { index: false, follow: false } : { index: true, follow: true },
+    openGraph: {
+      title,
+      description,
+      url: `${BASE_URL}/booking`,
+      siteName: 'Mamivibe',
+      locale: 'hu_HU',
+      type: 'website',
+      ...(ogImage && {
+        images: [{
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: pageData?.seo?.ogImage?.alt || title,
+        }]
+      }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      ...(ogImage && { images: [ogImage] }),
+    },
+  };
+}
+
+// Define props type for the page
+type BookingPageProps = {
+  searchParams: Promise<{ service?: string; }>;
+};
+
+export default async function BookingPage({ searchParams }: BookingPageProps) {
+  const [services, pageData] = await Promise.all([
+    getServices(),
+    getBookingPageData()
+  ]);
+  const { service: preselectedServiceId } = await searchParams;
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl w-full mx-auto">
+        <div className="mb-8">
+          <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            {pageData?.title || 'Foglald le az időpontodat'}
+          </h1>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            {pageData?.subtitle || 'Válassz egy szabad időpontot a naptárból, majd töltsd ki az űrlapot.'}
+          </p>
+        </div>
+
+        <BookingFlow services={services} preselectedServiceId={preselectedServiceId} />
+      </div>
+    </div>
+  );
+}
