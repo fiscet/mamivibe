@@ -1,0 +1,5 @@
+{
+  "schema": "../src/types/schema.json",
+  "generates": "../src/types/sanity.types.ts",
+  "overloadClientMethods": true
+}
