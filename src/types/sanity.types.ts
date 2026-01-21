@@ -13,6 +13,16 @@
  */
 
 // Source: ../src/types/schema.json
+export type PrimaryButton = {
+  text?: string;
+  link?: string;
+};
+
+export type SecondaryButton = {
+  text?: string;
+  link?: string;
+};
+
 export type Slot = {
   _id: string;
   _type: "slot";
@@ -122,6 +132,339 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  slug?: Slug;
+  title?: string;
+  subtitle?: string;
+  heroImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  content?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h2" | "h3" | "h4" | "blockquote";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: Array<string>;
+    ogImage?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    };
+    canonicalUrl?: string;
+    noIndex?: boolean;
+  };
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type ContactPage = {
+  _id: string;
+  _type: "contactPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  hero?: {
+    title?: string;
+    subtitle?: string;
+  };
+  contactInfo?: {
+    phone?: {
+      number?: string;
+      hours?: string;
+    };
+    email?: {
+      address?: string;
+    };
+    location?: {
+      street?: string;
+      note?: string;
+    };
+  };
+  form?: {
+    title?: string;
+    subtitle?: string;
+    responseTimeNote?: string;
+    successMessage?: string;
+  };
+  map?: {
+    showMap?: boolean;
+    embedUrl?: string;
+    coordinates?: {
+      lat?: number;
+      lng?: number;
+    };
+  };
+  seo?: SeoFields;
+};
+
+export type SeoFields = {
+  _type: "seoFields";
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: Array<string>;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  canonicalUrl?: string;
+  noIndex?: boolean;
+};
+
+export type BookingPage = {
+  _id: string;
+  _type: "bookingPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  hero?: {
+    title?: string;
+    subtitle?: string;
+  };
+  instructions?: PortableTextContent;
+  confirmationMessages?: {
+    successTitle?: string;
+    successMessage?: string;
+  };
+  seo?: SeoFields;
+};
+
+export type PortableTextContent = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h2" | "h3" | "h4" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      caption?: string;
+      _type: "image";
+      _key: string;
+    }
+>;
+
+export type ServicesPage = {
+  _id: string;
+  _type: "servicesPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  hero?: {
+    title?: string;
+    subtitle?: string;
+    badge?: string;
+  };
+  emptyStateMessage?: string;
+  seo?: SeoFields;
+};
+
+export type AboutPage = {
+  _id: string;
+  _type: "aboutPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  hero?: {
+    title?: string;
+    subtitle?: string;
+  };
+  bio?: {
+    profileImage?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    experienceBadge?: {
+      number?: string;
+      label?: string;
+    };
+    name?: string;
+    content?: PortableTextContent;
+  };
+  credentials?: Array<{
+    icon?:
+      | "FaGraduationCap"
+      | "FaHeart"
+      | "FaCertificate"
+      | "FaAward"
+      | "FaBook"
+      | "FaStethoscope";
+    iconColor?: "pink" | "violet" | "blue" | "green";
+    title?: string;
+    description?: string;
+    _key: string;
+  }>;
+  values?: {
+    sectionTitle?: string;
+    items?: Array<
+      {
+        _key: string;
+      } & ValueCard
+    >;
+  };
+  cta?: CtaBlock;
+  seo?: SeoFields;
+};
+
+export type CtaBlock = {
+  _type: "ctaBlock";
+  heading?: string;
+  description?: string;
+  primaryButton?: PrimaryButton;
+  secondaryButton?: SecondaryButton;
+  style?: "gradient-pink-violet" | "light-gray" | "white";
+};
+
+export type HomePage = {
+  _id: string;
+  _type: "homePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  hero?: {
+    badge?: string;
+    title?: string;
+    highlightedText?: string;
+    subtitle?: string;
+    heroImage?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    primaryCTA?: {
+      text?: string;
+      link?: string;
+    };
+    secondaryCTA?: {
+      text?: string;
+      link?: string;
+    };
+    availabilityNote?: string;
+  };
+  intro?: {
+    heading?: string;
+    content?: PortableTextContent;
+    linkText?: string;
+    linkUrl?: string;
+  };
+  servicesOverview?: {
+    sectionTitle?: string;
+    sectionSubtitle?: string;
+    serviceCards?: Array<{
+      icon?:
+        | "FaHandsHelping"
+        | "FaBaby"
+        | "FaCalendarCheck"
+        | "FaHeart"
+        | "FaStar";
+      title?: string;
+      description?: string;
+      link?: string;
+      _key: string;
+    }>;
+  };
+  testimonials?: {
+    sectionTitle?: string;
+    showTestimonials?: boolean;
+    maxCount?: number;
+  };
+  seo?: SeoFields;
+};
+
+export type ValueCard = {
+  _type: "valueCard";
+  icon?:
+    | "FaHeart"
+    | "FaHandsHelping"
+    | "FaBaby"
+    | "FaGraduationCap"
+    | "FaStar"
+    | "FaCalendarCheck"
+    | "FaShieldAlt"
+    | "FaUsers"
+    | "FaLightbulb"
+    | "FaCheckCircle";
+  title?: string;
+  description?: string;
+};
+
+export type MediaTag = {
+  _id: string;
+  _type: "media.tag";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: Slug;
+};
+
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
   background?: string;
@@ -219,13 +562,9 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type AllSanitySchemaTypes =
+  | PrimaryButton
+  | SecondaryButton
   | Slot
   | AppointmentReference
   | Review
@@ -236,6 +575,18 @@ export type AllSanitySchemaTypes =
   | Service
   | SanityImageCrop
   | SanityImageHotspot
+  | Page
+  | Slug
+  | ContactPage
+  | SeoFields
+  | BookingPage
+  | PortableTextContent
+  | ServicesPage
+  | AboutPage
+  | CtaBlock
+  | HomePage
+  | ValueCard
+  | MediaTag
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -243,8 +594,7 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
-  | Slug;
+  | Geopoint;
 
 export declare const internalGroqTypeReferenceTo: unique symbol;
 

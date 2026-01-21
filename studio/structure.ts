@@ -1,6 +1,16 @@
 import type { StructureBuilder, StructureResolver, StructureResolverContext } from 'sanity/structure';
-import { FaCalendarCheck, FaStar, FaTags } from 'react-icons/fa';
-import { map, combineLatest, of } from 'rxjs';
+import { FaCalendarCheck, FaStar, FaTags, FaFileAlt, FaHome, FaUser, FaEnvelope, FaCalendarAlt } from 'react-icons/fa';
+import { map, combineLatest } from 'rxjs';
+import { singletonTypes } from './schemaTypes';
+
+// Singleton page configurations
+const singletonPages = [
+  { type: 'homePage', title: 'Home', icon: FaHome, documentId: 'homePage' },
+  { type: 'aboutPage', title: 'About', icon: FaUser, documentId: 'aboutPage' },
+  { type: 'servicesPage', title: 'Services', icon: FaTags, documentId: 'servicesPage' },
+  { type: 'bookingPage', title: 'Booking', icon: FaCalendarAlt, documentId: 'bookingPage' },
+  { type: 'contactPage', title: 'Contact', icon: FaEnvelope, documentId: 'contactPage' },
+];
 
 // Define the groups for the structure
 const groups = [
@@ -54,6 +64,33 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
       return S.list()
         .title('Mamivibe')
         .items([
+          // Pages Group - Singleton pages like Strapi single types
+          S.listItem()
+            .title('Pages')
+            .id('pages')
+            .icon(FaFileAlt)
+            .child(
+              S.list()
+                .title('Pages')
+                .items(
+                  singletonPages.map((page) =>
+                    S.listItem()
+                      .title(page.title)
+                      .id(page.type)
+                      .icon(page.icon)
+                      .child(
+                        S.document()
+                          .schemaType(page.type)
+                          .documentId(page.documentId)
+                          .title(page.title)
+                      )
+                  )
+                )
+            ),
+
+          S.divider(),
+
+          // Other groups (Bookings, Feedback, Configuration)
           ...groups.map((group) => {
             let title = group.name;
             if (group.name === 'Feedback' && totalCount > 0) {
@@ -89,12 +126,23 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
                 ])
             );
           }),
+
           S.divider(),
-          // Add a fallback list item for any types not in the groups
+
+          // Blog/News pages (using the generic page type)
+          S.documentTypeListItem('page')
+            .title('Blog / News')
+            .icon(FaFileAlt),
+
+          // Filter out singleton types and already grouped types from the fallback
           ...S.documentTypeListItems().filter(
             (listItem) => {
               const id = listItem.getId();
-              return !groups.some(group => group.menuGroups.flat().includes(id || ''));
+              // Exclude singletons, grouped types, and the page type (already shown above)
+              const groupedTypes = groups.flatMap(group => group.menuGroups.flat());
+              return !singletonTypes.includes(id || '') &&
+                !groupedTypes.includes(id || '') &&
+                id !== 'page';
             }
           ),
         ]);

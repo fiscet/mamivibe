@@ -1,18 +1,35 @@
-import { client, urlFor } from "@/lib/sanity.client";
-import { groq } from "next-sanity";
+import { client, urlFor } from '@/lib/sanity.client';
+import { groq } from 'next-sanity';
 import { Metadata } from 'next';
-import Link from "next/link";
-import { FaClock, FaTag } from "react-icons/fa";
+import Link from 'next/link';
+import { FaClock, FaTag } from 'react-icons/fa';
 
 // Enable revalidation for fresh data
 export const revalidate = 3600;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
+interface Service {
+  _id: string;
+  title: string;
+  duration: number;
+  price: number;
+  description: string;
+  image?: {
+    asset: {
+      _ref: string;
+    };
+  };
+}
+
 async function getServicesPageData() {
-  return client.fetch(groq`*[_type == "page" && slug.current == "services"][0]{
-    title,
-    subtitle,
+  return client.fetch(groq`*[_type == "servicesPage" && _id == "servicesPage"][0]{
+    hero {
+      title,
+      subtitle,
+      badge
+    },
+    emptyStateMessage,
     seo {
       metaTitle,
       metaDescription,
@@ -27,7 +44,7 @@ async function getServicesPageData() {
   }`);
 }
 
-async function getServices() {
+async function getServices(): Promise<Service[]> {
   return client.fetch(groq`*[_type == "service"]{
     _id,
     title,
@@ -41,9 +58,19 @@ async function getServices() {
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getServicesPageData();
 
-  const title = pageData?.seo?.metaTitle || pageData?.title || 'Szolgáltatásaim - Mamivibe';
-  const description = pageData?.seo?.metaDescription || pageData?.subtitle || 'Személyre szabott szoptatási tanácsadás, babaápolási oktatás és szülésfelkészítés.';
-  const keywords = pageData?.seo?.keywords || ['szoptatási tanácsadás', 'babaápolás', 'konzultáció'];
+  const title =
+    pageData?.seo?.metaTitle ||
+    pageData?.hero?.title ||
+    'Szolgáltatásaim - Mamivibe';
+  const description =
+    pageData?.seo?.metaDescription ||
+    pageData?.hero?.subtitle ||
+    'Személyre szabott szoptatási tanácsadás, babaápolási oktatás és szülésfelkészítés.';
+  const keywords = pageData?.seo?.keywords || [
+    'szoptatási tanácsadás',
+    'babaápolás',
+    'konzultáció'
+  ];
   const ogImage = pageData?.seo?.ogImage?.asset
     ? urlFor(pageData.seo.ogImage).width(1200).height(630).url()
     : undefined;
@@ -53,9 +80,11 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords: keywords.join(', '),
     alternates: {
-      canonical: pageData?.seo?.canonicalUrl || `${BASE_URL}/services`,
+      canonical: pageData?.seo?.canonicalUrl || `${BASE_URL}/services`
     },
-    robots: pageData?.seo?.noIndex ? { index: false, follow: false } : { index: true, follow: true },
+    robots: pageData?.seo?.noIndex
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
     openGraph: {
       title,
       description,
@@ -64,20 +93,22 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'hu_HU',
       type: 'website',
       ...(ogImage && {
-        images: [{
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: pageData?.seo?.ogImage?.alt || title,
-        }]
-      }),
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: pageData?.seo?.ogImage?.alt || title
+          }
+        ]
+      })
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      ...(ogImage && { images: [ogImage] }),
-    },
+      ...(ogImage && { images: [ogImage] })
+    }
   };
 }
 
@@ -87,24 +118,37 @@ export default async function ServicesPage() {
     getServices()
   ]);
 
+  const heroTitle = pageData?.hero?.title || 'Szolgáltatásaim';
+  const heroSubtitle =
+    pageData?.hero?.subtitle ||
+    'Minden édesanya és baba története egyedi. Személyre szabott tanácsadással segítek, hogy megtaláljuk a számotokra legjobb megoldást.';
+  const heroBadge =
+    pageData?.hero?.badge || '💻 Online konzultáció • 🏠 Személyes tanácsadás';
+  const emptyStateMessage =
+    pageData?.emptyStateMessage ||
+    'Jelenleg nincs elérhető szolgáltatás feltöltve.';
+
   return (
     <div className="bg-gray-50 min-h-screen py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 font-headings">
-            {pageData?.title || 'Szolgáltatásaim'}
+            {heroTitle}
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed">
-            {pageData?.subtitle || 'Minden édesanya és baba története egyedi. Személyre szabott tanácsadással segítek, hogy megtaláljuk a számotokra legjobb megoldást.'}
+            {heroSubtitle}
           </p>
           <div className="mt-6 inline-block bg-white px-6 py-2 rounded-full shadow-sm border border-pink-100 text-pink-600 font-medium text-sm">
-            💻 Online konzultáció &nbsp; • &nbsp; 🏠 Személyes tanácsadás
+            {heroBadge}
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {services.map((service: any) => (
-            <div key={service._id} className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col">
+          {services.map((service) => (
+            <div
+              key={service._id}
+              className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
+            >
               <div className="h-56 bg-gradient-to-br from-pink-100 to-violet-100 relative overflow-hidden group">
                 {service.image ? (
                   <img
@@ -120,7 +164,9 @@ export default async function ServicesPage() {
               </div>
 
               <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{service.title}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  {service.title}
+                </h3>
 
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                   <div className="flex items-center gap-1.5">
@@ -134,7 +180,7 @@ export default async function ServicesPage() {
                 </div>
 
                 <p className="text-gray-600 mb-8 line-clamp-3 flex-grow leading-relaxed">
-                  {service.description || "Részletes leírás hamarosan..."}
+                  {service.description || 'Részletes leírás hamarosan...'}
                 </p>
 
                 <Link
@@ -149,7 +195,7 @@ export default async function ServicesPage() {
 
           {services.length === 0 && (
             <div className="col-span-full text-center py-20">
-              <p className="text-gray-500">Jelenleg nincs elérhető szolgáltatás feltöltve.</p>
+              <p className="text-gray-500">{emptyStateMessage}</p>
             </div>
           )}
         </div>
