@@ -2,43 +2,43 @@ import { defineField, defineType } from 'sanity';
 
 export const contactMessage = defineType({
   name: 'contactMessage',
-  title: 'Contact Message',
+  title: 'Kapcsolati üzenet',
   type: 'document',
   fields: [
     defineField({
       name: 'name',
-      title: 'Name',
+      title: 'Név',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'email',
-      title: 'Email',
+      title: 'E-mail cím',
       type: 'string',
       validation: (rule) => rule.required().email(),
     }),
     defineField({
       name: 'message',
-      title: 'Message',
+      title: 'Üzenet',
       type: 'text',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'createdAt',
-      title: 'Created At',
+      title: 'Létrehozva',
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
       readOnly: true,
     }),
     defineField({
       name: 'status',
-      title: 'Status',
+      title: 'Állapot',
       type: 'string',
       options: {
         list: [
-          { title: 'New', value: 'new' },
-          { title: 'Read', value: 'read' },
-          { title: 'Replied', value: 'replied' },
+          { title: 'Új', value: 'new' },
+          { title: 'Olvasott', value: 'read' },
+          { title: 'Megválaszolt', value: 'replied' },
         ],
         layout: 'radio',
       },
@@ -52,8 +52,13 @@ export const contactMessage = defineType({
       status: 'status',
     },
     prepare({ title, subtitle, status }) {
+      const statusLabels: Record<string, string> = {
+        new: 'Új',
+        read: 'Olvasott',
+        replied: 'Megválaszolt',
+      };
       return {
-        title: `${title} (${status})`,
+        title: `${title} (${statusLabels[status] || status})`,
         subtitle,
       };
     },

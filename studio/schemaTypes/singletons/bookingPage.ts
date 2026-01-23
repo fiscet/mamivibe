@@ -3,32 +3,32 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 export const bookingPage = defineType({
   name: 'bookingPage',
-  title: 'Booking Page',
+  title: 'Időpontfoglalás oldal',
   type: 'document',
   icon: FaCalendarAlt,
   groups: [
-    { name: 'hero', title: 'Hero Section' },
-    { name: 'content', title: 'Content' },
+    { name: 'hero', title: 'Főszekció' },
+    { name: 'content', title: 'Tartalom' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
     // Hero Section
     defineField({
       name: 'hero',
-      title: 'Hero Section',
+      title: 'Főszekció',
       type: 'object',
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'title',
-          title: 'Title',
+          title: 'Cím',
           type: 'string',
           validation: (rule) => rule.required(),
         }),
         defineField({
           name: 'subtitle',
-          title: 'Subtitle',
+          title: 'Alcím',
           type: 'text',
           rows: 2,
         }),
@@ -38,32 +38,32 @@ export const bookingPage = defineType({
     // Additional Instructions
     defineField({
       name: 'instructions',
-      title: 'Additional Instructions',
+      title: 'További útmutatás',
       type: 'portableTextContent',
       group: 'content',
-      description: 'Optional additional instructions or information for booking',
+      description: 'Opcionális további útmutatás vagy információ a foglaláshoz',
     }),
 
     // Confirmation Messages
     defineField({
       name: 'confirmationMessages',
-      title: 'Confirmation Messages',
+      title: 'Visszaigazoló üzenetek',
       type: 'object',
       group: 'content',
       options: { collapsible: true, collapsed: true },
       fields: [
         defineField({
           name: 'successTitle',
-          title: 'Success Title',
+          title: 'Sikeres foglalás címe',
           type: 'string',
-          description: 'Title shown after successful booking',
+          description: 'Cím, ami sikeres foglalás után jelenik meg',
         }),
         defineField({
           name: 'successMessage',
-          title: 'Success Message',
+          title: 'Sikeres foglalás üzenete',
           type: 'text',
           rows: 3,
-          description: 'Message shown after successful booking',
+          description: 'Üzenet, ami sikeres foglalás után jelenik meg',
         }),
       ],
     }),
@@ -71,7 +71,7 @@ export const bookingPage = defineType({
     // SEO
     defineField({
       name: 'seo',
-      title: 'SEO Settings',
+      title: 'SEO beállítások',
       type: 'seoFields',
       group: 'seo',
     }),
@@ -79,8 +79,8 @@ export const bookingPage = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Booking Page',
-        subtitle: 'Appointment booking page',
+        title: 'Időpontfoglalás oldal',
+        subtitle: 'Időpontfoglalási oldal',
       };
     },
   },

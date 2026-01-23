@@ -2,66 +2,66 @@ import { defineField, defineType } from 'sanity';
 
 export const ctaBlock = defineType({
   name: 'ctaBlock',
-  title: 'Call to Action Block',
+  title: 'Cselekvésre ösztönző blokk',
   type: 'object',
   fields: [
     defineField({
       name: 'heading',
-      title: 'Heading',
+      title: 'Címsor',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'Leírás',
       type: 'text',
       rows: 2,
     }),
     defineField({
       name: 'primaryButton',
-      title: 'Primary Button',
+      title: 'Elsődleges gomb',
       type: 'object',
       fields: [
         defineField({
           name: 'text',
-          title: 'Button Text',
+          title: 'Gomb szövege',
           type: 'string',
         }),
         defineField({
           name: 'link',
-          title: 'Button Link',
+          title: 'Gomb hivatkozása',
           type: 'string',
-          description: 'Internal path (e.g., /booking) or external URL',
+          description: 'Belső útvonal (pl. /idopontfoglalas) vagy külső URL',
         }),
       ],
     }),
     defineField({
       name: 'secondaryButton',
-      title: 'Secondary Button',
+      title: 'Másodlagos gomb',
       type: 'object',
       fields: [
         defineField({
           name: 'text',
-          title: 'Button Text',
+          title: 'Gomb szövege',
           type: 'string',
         }),
         defineField({
           name: 'link',
-          title: 'Button Link',
+          title: 'Gomb hivatkozása',
           type: 'string',
-          description: 'Internal path (e.g., /contact) or external URL',
+          description: 'Belső útvonal (pl. /kapcsolat) vagy külső URL',
         }),
       ],
     }),
     defineField({
       name: 'style',
-      title: 'Background Style',
+      title: 'Háttér stílus',
       type: 'string',
       options: {
         list: [
-          { title: 'Pink to Violet Gradient', value: 'gradient-pink-violet' },
-          { title: 'Light Gray', value: 'light-gray' },
-          { title: 'White', value: 'white' },
+          { title: 'Rózsaszín-lila színátmenet', value: 'gradient-pink-violet' },
+          { title: 'Világosszürke', value: 'light-gray' },
+          { title: 'Fehér', value: 'white' },
         ],
       },
       initialValue: 'gradient-pink-violet',
@@ -73,8 +73,8 @@ export const ctaBlock = defineType({
     },
     prepare({ title }) {
       return {
-        title: title || 'CTA Block',
-        subtitle: 'Call to Action',
+        title: title || 'CTA blokk',
+        subtitle: 'Cselekvésre ösztönzés',
       };
     },
   },

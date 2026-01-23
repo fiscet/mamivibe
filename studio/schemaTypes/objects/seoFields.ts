@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity';
 
 export const seoFields = defineType({
   name: 'seoFields',
-  title: 'SEO Settings',
+  title: 'SEO beállítások',
   type: 'object',
   options: {
     collapsible: true,
@@ -11,57 +11,57 @@ export const seoFields = defineType({
   fields: [
     defineField({
       name: 'metaTitle',
-      title: 'Meta Title',
+      title: 'Meta cím',
       type: 'string',
-      description: 'Override the page title for search engines (50-60 characters recommended)',
+      description: 'Az oldal címének felülírása keresőmotorok számára (50-60 karakter ajánlott)',
       validation: (rule) => rule.max(70),
     }),
     defineField({
       name: 'metaDescription',
-      title: 'Meta Description',
+      title: 'Meta leírás',
       type: 'text',
       rows: 3,
-      description: 'Description for search engines (150-160 characters recommended)',
+      description: 'Leírás keresőmotorok számára (150-160 karakter ajánlott)',
       validation: (rule) => rule.max(200),
     }),
     defineField({
       name: 'keywords',
-      title: 'Keywords',
+      title: 'Kulcsszavak',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
         layout: 'tags',
       },
-      description: 'Relevant keywords for search engines',
+      description: 'Releváns kulcsszavak keresőmotorok számára',
     }),
     defineField({
       name: 'ogImage',
-      title: 'Open Graph Image',
+      title: 'Open Graph kép',
       type: 'image',
-      description: 'Image for social sharing (recommended: 1200x630px)',
+      description: 'Kép közösségi megosztáshoz (ajánlott: 1200x630px)',
       options: {
         hotspot: true,
       },
       fields: [
         defineField({
           name: 'alt',
-          title: 'Alt Text',
+          title: 'Alternatív szöveg',
           type: 'string',
-          description: 'Alternative text for the image',
+          description: 'A kép alternatív szövege',
         }),
       ],
     }),
     defineField({
       name: 'canonicalUrl',
-      title: 'Canonical URL',
+      title: 'Kanonikus URL',
       type: 'url',
-      description: 'Override the canonical URL if this content appears elsewhere',
+      description: 'Kanonikus URL felülírása, ha a tartalom máshol is megjelenik',
     }),
     defineField({
       name: 'noIndex',
-      title: 'Hide from Search Engines',
+      title: 'Elrejtés keresőmotorok elől',
       type: 'boolean',
-      description: 'Enable to prevent this page from being indexed by search engines',
+      description: 'Engedélyezd, hogy az oldal ne legyen indexelve keresőmotorok által',
       initialValue: false,
     }),
   ],

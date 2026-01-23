@@ -2,33 +2,33 @@ import { defineField, defineType } from 'sanity';
 
 export const portableTextContent = defineType({
   name: 'portableTextContent',
-  title: 'Rich Text Content',
+  title: 'Gazdag szöveges tartalom',
   type: 'array',
   of: [
     {
       type: 'block',
       styles: [
-        { title: 'Normal', value: 'normal' },
+        { title: 'Normál', value: 'normal' },
         { title: 'H2', value: 'h2' },
         { title: 'H3', value: 'h3' },
         { title: 'H4', value: 'h4' },
-        { title: 'Quote', value: 'blockquote' },
+        { title: 'Idézet', value: 'blockquote' },
       ],
       lists: [
-        { title: 'Bullet', value: 'bullet' },
-        { title: 'Numbered', value: 'number' },
+        { title: 'Felsorolás', value: 'bullet' },
+        { title: 'Számozott', value: 'number' },
       ],
       marks: {
         decorators: [
-          { title: 'Strong', value: 'strong' },
-          { title: 'Emphasis', value: 'em' },
-          { title: 'Underline', value: 'underline' },
+          { title: 'Félkövér', value: 'strong' },
+          { title: 'Dőlt', value: 'em' },
+          { title: 'Aláhúzott', value: 'underline' },
         ],
         annotations: [
           {
             name: 'link',
             type: 'object',
-            title: 'Link',
+            title: 'Hivatkozás',
             fields: [
               {
                 name: 'href',
@@ -53,13 +53,13 @@ export const portableTextContent = defineType({
         defineField({
           name: 'alt',
           type: 'string',
-          title: 'Alt text',
-          description: 'Alternative text for accessibility',
+          title: 'Alternatív szöveg',
+          description: 'Akadálymentességi leírás',
         }),
         defineField({
           name: 'caption',
           type: 'string',
-          title: 'Caption',
+          title: 'Képaláírás',
         }),
       ],
     },
