@@ -2,38 +2,38 @@ import { defineField, defineType } from 'sanity';
 
 export const valueCard = defineType({
   name: 'valueCard',
-  title: 'Value Card',
+  title: 'Érték kártya',
   type: 'object',
   fields: [
     defineField({
       name: 'icon',
-      title: 'Icon',
+      title: 'Ikon',
       type: 'string',
-      description: 'Icon name from react-icons (e.g., FaHeart, FaHandsHelping, FaBaby)',
+      description: 'Ikon neve a react-icons könyvtárból (pl. FaHeart, FaHandsHelping, FaBaby)',
       options: {
         list: [
-          { title: 'Heart', value: 'FaHeart' },
-          { title: 'Helping Hands', value: 'FaHandsHelping' },
-          { title: 'Baby', value: 'FaBaby' },
-          { title: 'Graduation Cap', value: 'FaGraduationCap' },
-          { title: 'Star', value: 'FaStar' },
-          { title: 'Calendar Check', value: 'FaCalendarCheck' },
-          { title: 'Shield', value: 'FaShieldAlt' },
-          { title: 'Users', value: 'FaUsers' },
-          { title: 'Lightbulb', value: 'FaLightbulb' },
-          { title: 'Check Circle', value: 'FaCheckCircle' },
+          { title: 'Szív', value: 'FaHeart' },
+          { title: 'Segítő kezek', value: 'FaHandsHelping' },
+          { title: 'Baba', value: 'FaBaby' },
+          { title: 'Diplomasapka', value: 'FaGraduationCap' },
+          { title: 'Csillag', value: 'FaStar' },
+          { title: 'Naptár pipa', value: 'FaCalendarCheck' },
+          { title: 'Pajzs', value: 'FaShieldAlt' },
+          { title: 'Felhasználók', value: 'FaUsers' },
+          { title: 'Villanykörte', value: 'FaLightbulb' },
+          { title: 'Pipa kör', value: 'FaCheckCircle' },
         ],
       },
     }),
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Cím',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'Leírás',
       type: 'text',
       rows: 3,
     }),
@@ -45,8 +45,8 @@ export const valueCard = defineType({
     },
     prepare({ title, icon }) {
       return {
-        title: title || 'Value Card',
-        subtitle: icon || 'No icon selected',
+        title: title || 'Érték kártya',
+        subtitle: icon || 'Nincs ikon kiválasztva',
       };
     },
   },

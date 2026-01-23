@@ -3,80 +3,80 @@ import { FaHome } from 'react-icons/fa';
 
 export const homePage = defineType({
   name: 'homePage',
-  title: 'Home Page',
+  title: 'Főoldal',
   type: 'document',
   icon: FaHome,
   groups: [
-    { name: 'hero', title: 'Hero Section' },
-    { name: 'intro', title: 'Introduction' },
-    { name: 'services', title: 'Services Overview' },
-    { name: 'testimonials', title: 'Testimonials' },
+    { name: 'hero', title: 'Főszekció' },
+    { name: 'intro', title: 'Bemutatkozás' },
+    { name: 'services', title: 'Szolgáltatások áttekintése' },
+    { name: 'testimonials', title: 'Vélemények' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
     // Hero Section
     defineField({
       name: 'hero',
-      title: 'Hero Section',
+      title: 'Főszekció',
       type: 'object',
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'badge',
-          title: 'Badge Text',
+          title: 'Jelvény szöveg',
           type: 'string',
-          description: 'Small text above the title (e.g., "Szeretetteljes támogatás az anyaság útján")',
+          description: 'Kis szöveg a cím felett (pl. "Szeretetteljes támogatás az anyaság útján")',
         }),
         defineField({
           name: 'title',
-          title: 'Title',
+          title: 'Cím',
           type: 'string',
-          description: 'Main headline',
+          description: 'Fő címsor',
           validation: (rule) => rule.required(),
         }),
         defineField({
           name: 'highlightedText',
-          title: 'Highlighted Text',
+          title: 'Kiemelt szöveg',
           type: 'string',
-          description: 'Text to highlight with gradient (appears after title)',
+          description: 'Színátmenetes kiemelésű szöveg (a cím után jelenik meg)',
         }),
         defineField({
           name: 'subtitle',
-          title: 'Subtitle',
+          title: 'Alcím',
           type: 'text',
           rows: 2,
-          description: 'Supporting text below the title',
+          description: 'Kiegészítő szöveg a cím alatt',
         }),
         defineField({
           name: 'heroImage',
-          title: 'Hero Image',
+          title: 'Főkép',
           type: 'image',
           options: { hotspot: true },
         }),
         defineField({
           name: 'primaryCTA',
-          title: 'Primary Button',
+          title: 'Elsődleges gomb',
           type: 'object',
           fields: [
-            defineField({ name: 'text', title: 'Button Text', type: 'string' }),
-            defineField({ name: 'link', title: 'Button Link', type: 'string' }),
+            defineField({ name: 'text', title: 'Gomb szövege', type: 'string' }),
+            defineField({ name: 'link', title: 'Gomb hivatkozása', type: 'string' }),
           ],
         }),
         defineField({
           name: 'secondaryCTA',
-          title: 'Secondary Button',
+          title: 'Másodlagos gomb',
           type: 'object',
           fields: [
-            defineField({ name: 'text', title: 'Button Text', type: 'string' }),
-            defineField({ name: 'link', title: 'Button Link', type: 'string' }),
+            defineField({ name: 'text', title: 'Gomb szövege', type: 'string' }),
+            defineField({ name: 'link', title: 'Gomb hivatkozása', type: 'string' }),
           ],
         }),
         defineField({
           name: 'availabilityNote',
-          title: 'Availability Note',
+          title: 'Elérhetőségi megjegyzés',
           type: 'string',
-          description: 'Small note below buttons (e.g., "✅ Elérhető online és személyesen Budapesten")',
+          description: 'Kis megjegyzés a gombok alatt (pl. "✅ Elérhető online és személyesen Budapesten")',
         }),
       ],
     }),
@@ -84,32 +84,32 @@ export const homePage = defineType({
     // Introduction Section
     defineField({
       name: 'intro',
-      title: 'Introduction Section',
+      title: 'Bemutatkozás szekció',
       type: 'object',
       group: 'intro',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'heading',
-          title: 'Heading',
+          title: 'Címsor',
           type: 'string',
         }),
         defineField({
           name: 'content',
-          title: 'Content',
+          title: 'Tartalom',
           type: 'portableTextContent',
         }),
         defineField({
           name: 'linkText',
-          title: 'Link Text',
+          title: 'Hivatkozás szövege',
           type: 'string',
-          description: 'Text for the "learn more" link',
+          description: 'A "tudj meg többet" hivatkozás szövege',
         }),
         defineField({
           name: 'linkUrl',
-          title: 'Link URL',
+          title: 'Hivatkozás URL',
           type: 'string',
-          description: 'URL for the "learn more" link (e.g., /about)',
+          description: 'A "tudj meg többet" hivatkozás URL-je (pl. /rolam)',
         }),
       ],
     }),
@@ -117,24 +117,24 @@ export const homePage = defineType({
     // Services Overview Section
     defineField({
       name: 'servicesOverview',
-      title: 'Services Overview Section',
+      title: 'Szolgáltatások áttekintése szekció',
       type: 'object',
       group: 'services',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'sectionTitle',
-          title: 'Section Title',
+          title: 'Szekció címe',
           type: 'string',
         }),
         defineField({
           name: 'sectionSubtitle',
-          title: 'Section Subtitle',
+          title: 'Szekció alcíme',
           type: 'string',
         }),
         defineField({
           name: 'serviceCards',
-          title: 'Service Cards',
+          title: 'Szolgáltatás kártyák',
           type: 'array',
           of: [
             {
@@ -142,26 +142,26 @@ export const homePage = defineType({
               fields: [
                 defineField({
                   name: 'icon',
-                  title: 'Icon',
+                  title: 'Ikon',
                   type: 'string',
                   options: {
                     list: [
-                      { title: 'Helping Hands', value: 'FaHandsHelping' },
-                      { title: 'Baby', value: 'FaBaby' },
-                      { title: 'Calendar Check', value: 'FaCalendarCheck' },
-                      { title: 'Heart', value: 'FaHeart' },
-                      { title: 'Star', value: 'FaStar' },
+                      { title: 'Segítő kezek', value: 'FaHandsHelping' },
+                      { title: 'Baba', value: 'FaBaby' },
+                      { title: 'Naptár pipa', value: 'FaCalendarCheck' },
+                      { title: 'Szív', value: 'FaHeart' },
+                      { title: 'Csillag', value: 'FaStar' },
                     ],
                   },
                 }),
-                defineField({ name: 'title', title: 'Title', type: 'string' }),
-                defineField({ name: 'description', title: 'Description', type: 'text', rows: 2 }),
-                defineField({ name: 'link', title: 'Link', type: 'string' }),
+                defineField({ name: 'title', title: 'Cím', type: 'string' }),
+                defineField({ name: 'description', title: 'Leírás', type: 'text', rows: 2 }),
+                defineField({ name: 'link', title: 'Hivatkozás', type: 'string' }),
               ],
               preview: {
                 select: { title: 'title', icon: 'icon' },
                 prepare({ title, icon }) {
-                  return { title: title || 'Service Card', subtitle: icon };
+                  return { title: title || 'Szolgáltatás kártya', subtitle: icon };
                 },
               },
             },
@@ -173,28 +173,28 @@ export const homePage = defineType({
     // Testimonials Section
     defineField({
       name: 'testimonials',
-      title: 'Testimonials Section',
+      title: 'Vélemények szekció',
       type: 'object',
       group: 'testimonials',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'sectionTitle',
-          title: 'Section Title',
+          title: 'Szekció címe',
           type: 'string',
         }),
         defineField({
           name: 'showTestimonials',
-          title: 'Show Testimonials',
+          title: 'Vélemények megjelenítése',
           type: 'boolean',
-          description: 'Toggle to show/hide the testimonials section',
+          description: 'Kapcsoló a vélemények szekció megjelenítéséhez/elrejtéséhez',
           initialValue: true,
         }),
         defineField({
           name: 'maxCount',
-          title: 'Maximum Testimonials',
+          title: 'Maximum vélemények száma',
           type: 'number',
-          description: 'Maximum number of testimonials to display',
+          description: 'Megjelenítendő vélemények maximális száma',
           initialValue: 3,
           validation: (rule) => rule.min(1).max(6),
         }),
@@ -204,7 +204,7 @@ export const homePage = defineType({
     // SEO
     defineField({
       name: 'seo',
-      title: 'SEO Settings',
+      title: 'SEO beállítások',
       type: 'seoFields',
       group: 'seo',
     }),
@@ -212,8 +212,8 @@ export const homePage = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Home Page',
-        subtitle: 'Main landing page',
+        title: 'Főoldal',
+        subtitle: 'Fő nyitóoldal',
       };
     },
   },

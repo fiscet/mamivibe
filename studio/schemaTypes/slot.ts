@@ -2,12 +2,12 @@ import { defineField, defineType } from 'sanity';
 
 export const slot = defineType({
   name: 'slot',
-  title: 'Availability Slot',
+  title: 'Elérhetőségi időpont',
   type: 'document',
   fields: [
     defineField({
       name: 'date',
-      title: 'Date',
+      title: 'Dátum',
       type: 'date',
       options: {
         dateFormat: 'YYYY-MM-DD',
@@ -15,7 +15,7 @@ export const slot = defineType({
     }),
     defineField({
       name: 'availableTimes',
-      title: 'Available Start Times',
+      title: 'Elérhető kezdési időpontok',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
@@ -41,11 +41,11 @@ export const slot = defineType({
           { title: '17:00', value: '17:00' },
         ]
       },
-      description: 'Select start times available for this day. Bookings will remove availability.'
+      description: 'Válaszd ki az ezen a napon elérhető kezdési időpontokat. A foglalások eltávolítják az elérhetőséget.'
     }),
     defineField({
       name: 'isFullyBooked',
-      title: 'Fully Booked',
+      title: 'Teljesen foglalt',
       type: 'boolean',
       initialValue: false
     })
@@ -58,7 +58,7 @@ export const slot = defineType({
     prepare({ title, subtitle }) {
       return {
         title: title,
-        subtitle: subtitle ? 'Full' : 'Available'
+        subtitle: subtitle ? 'Foglalt' : 'Elérhető'
       };
     }
   }

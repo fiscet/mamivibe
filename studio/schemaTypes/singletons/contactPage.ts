@@ -3,34 +3,34 @@ import { FaEnvelope } from 'react-icons/fa';
 
 export const contactPage = defineType({
   name: 'contactPage',
-  title: 'Contact Page',
+  title: 'Kapcsolat oldal',
   type: 'document',
   icon: FaEnvelope,
   groups: [
-    { name: 'hero', title: 'Hero Section' },
-    { name: 'contact', title: 'Contact Info' },
-    { name: 'form', title: 'Form Settings' },
-    { name: 'map', title: 'Map' },
+    { name: 'hero', title: 'Főszekció' },
+    { name: 'contact', title: 'Kapcsolati adatok' },
+    { name: 'form', title: 'Űrlap beállítások' },
+    { name: 'map', title: 'Térkép' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
     // Hero Section
     defineField({
       name: 'hero',
-      title: 'Hero Section',
+      title: 'Főszekció',
       type: 'object',
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'title',
-          title: 'Title',
+          title: 'Cím',
           type: 'string',
           validation: (rule) => rule.required(),
         }),
         defineField({
           name: 'subtitle',
-          title: 'Subtitle',
+          title: 'Alcím',
           type: 'text',
           rows: 2,
         }),
@@ -40,59 +40,59 @@ export const contactPage = defineType({
     // Contact Information
     defineField({
       name: 'contactInfo',
-      title: 'Contact Information',
+      title: 'Kapcsolati adatok',
       type: 'object',
       group: 'contact',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'phone',
-          title: 'Phone',
+          title: 'Telefon',
           type: 'object',
           fields: [
             defineField({
               name: 'number',
-              title: 'Phone Number',
+              title: 'Telefonszám',
               type: 'string',
-              description: 'e.g., +36 30 123 4567',
+              description: 'pl. +36 30 123 4567',
             }),
             defineField({
               name: 'hours',
-              title: 'Available Hours',
+              title: 'Elérhető időszak',
               type: 'string',
-              description: 'e.g., Hétköznap 9:00 - 17:00',
+              description: 'pl. Hétköznap 9:00 - 17:00',
             }),
           ],
         }),
         defineField({
           name: 'email',
-          title: 'Email',
+          title: 'E-mail',
           type: 'object',
           fields: [
             defineField({
               name: 'address',
-              title: 'Email Address',
+              title: 'E-mail cím',
               type: 'string',
-              description: 'e.g., info@mamivibe.hu',
+              description: 'pl. info@mamivibe.hu',
             }),
           ],
         }),
         defineField({
           name: 'location',
-          title: 'Location',
+          title: 'Helyszín',
           type: 'object',
           fields: [
             defineField({
               name: 'street',
-              title: 'Street Address',
+              title: 'Utca, házszám',
               type: 'string',
-              description: 'e.g., 1111 Budapest, Példa utca 12.',
+              description: 'pl. 1111 Budapest, Példa utca 12.',
             }),
             defineField({
               name: 'note',
-              title: 'Location Note',
+              title: 'Helyszín megjegyzés',
               type: 'string',
-              description: 'e.g., Személyes és online konzultáció is elérhető',
+              description: 'pl. Személyes és online konzultáció is elérhető',
             }),
           ],
         }),
@@ -102,33 +102,33 @@ export const contactPage = defineType({
     // Form Settings
     defineField({
       name: 'form',
-      title: 'Form Settings',
+      title: 'Űrlap beállítások',
       type: 'object',
       group: 'form',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'title',
-          title: 'Form Title',
+          title: 'Űrlap címe',
           type: 'string',
         }),
         defineField({
           name: 'subtitle',
-          title: 'Form Subtitle',
+          title: 'Űrlap alcíme',
           type: 'string',
         }),
         defineField({
           name: 'responseTimeNote',
-          title: 'Response Time Note',
+          title: 'Válaszidő megjegyzés',
           type: 'string',
-          description: 'e.g., Írj nekem, és igyekszem 24 órán belül válaszolni.',
+          description: 'pl. Írj nekem, és igyekszem 24 órán belül válaszolni.',
         }),
         defineField({
           name: 'successMessage',
-          title: 'Success Message',
+          title: 'Sikeres küldés üzenete',
           type: 'text',
           rows: 2,
-          description: 'Message shown after successful form submission',
+          description: 'Üzenet, ami sikeres űrlap beküldés után jelenik meg',
         }),
       ],
     }),
@@ -136,31 +136,31 @@ export const contactPage = defineType({
     // Map Settings
     defineField({
       name: 'map',
-      title: 'Map Settings',
+      title: 'Térkép beállítások',
       type: 'object',
       group: 'map',
       options: { collapsible: true, collapsed: true },
       fields: [
         defineField({
           name: 'showMap',
-          title: 'Show Map',
+          title: 'Térkép megjelenítése',
           type: 'boolean',
           initialValue: true,
         }),
         defineField({
           name: 'embedUrl',
-          title: 'Google Maps Embed URL',
+          title: 'Google Maps beágyazási URL',
           type: 'url',
-          description: 'Paste the Google Maps embed URL here',
+          description: 'Illeszd be ide a Google Maps beágyazási URL-t',
         }),
         defineField({
           name: 'coordinates',
-          title: 'Coordinates',
+          title: 'Koordináták',
           type: 'object',
-          description: 'Alternative: provide coordinates for custom map',
+          description: 'Alternatíva: add meg a koordinátákat egyéni térképhez',
           fields: [
-            defineField({ name: 'lat', title: 'Latitude', type: 'number' }),
-            defineField({ name: 'lng', title: 'Longitude', type: 'number' }),
+            defineField({ name: 'lat', title: 'Szélesség', type: 'number' }),
+            defineField({ name: 'lng', title: 'Hosszúság', type: 'number' }),
           ],
         }),
       ],
@@ -169,7 +169,7 @@ export const contactPage = defineType({
     // SEO
     defineField({
       name: 'seo',
-      title: 'SEO Settings',
+      title: 'SEO beállítások',
       type: 'seoFields',
       group: 'seo',
     }),
@@ -177,8 +177,8 @@ export const contactPage = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Contact Page',
-        subtitle: 'Contact information page',
+        title: 'Kapcsolat oldal',
+        subtitle: 'Kapcsolati információk oldal',
       };
     },
   },

@@ -2,48 +2,48 @@ import { defineField, defineType } from 'sanity';
 
 export const appointment = defineType({
   name: 'appointment',
-  title: 'Appointment',
+  title: 'Időpont',
   type: 'document',
   fields: [
     defineField({
       name: 'clientName',
-      title: 'Client Name',
+      title: 'Ügyfél neve',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'email',
-      title: 'Email',
+      title: 'E-mail cím',
       type: 'string',
       validation: (rule) => rule.required().email(),
     }),
     defineField({
       name: 'phone',
-      title: 'Phone Number',
+      title: 'Telefonszám',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'service',
-      title: 'Service',
+      title: 'Szolgáltatás',
       type: 'reference',
       to: [{ type: 'service' }],
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'preferredDate',
-      title: 'Preferred Date',
+      title: 'Kívánt időpont',
       type: 'datetime',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'meetingType',
-      title: 'Meeting Type',
+      title: 'Találkozó típusa',
       type: 'string',
       options: {
         list: [
           { title: 'Online', value: 'online' },
-          { title: 'Személyesen (In-person)', value: 'in-person' },
+          { title: 'Személyesen', value: 'in-person' },
         ],
         layout: 'radio',
       },
@@ -51,14 +51,14 @@ export const appointment = defineType({
     }),
     defineField({
       name: 'status',
-      title: 'Status',
+      title: 'Állapot',
       type: 'string',
       options: {
         list: [
-          { title: 'Pending', value: 'pending' },
-          { title: 'Confirmed', value: 'confirmed' },
-          { title: 'Cancelled', value: 'cancelled' },
-          { title: 'Completed', value: 'completed' },
+          { title: 'Függőben', value: 'pending' },
+          { title: 'Megerősítve', value: 'confirmed' },
+          { title: 'Lemondva', value: 'cancelled' },
+          { title: 'Teljesítve', value: 'completed' },
         ],
         layout: 'radio',
       },
@@ -66,7 +66,7 @@ export const appointment = defineType({
     }),
     defineField({
       name: 'notes',
-      title: 'Notes',
+      title: 'Megjegyzések',
       type: 'text',
     }),
   ],
@@ -78,9 +78,15 @@ export const appointment = defineType({
       status: 'status',
     },
     prepare({ title, subtitle, date, status }) {
+      const statusLabels: Record<string, string> = {
+        pending: 'Függőben',
+        confirmed: 'Megerősítve',
+        cancelled: 'Lemondva',
+        completed: 'Teljesítve',
+      };
       return {
-        title: `${title} (${status})`,
-        subtitle: `${subtitle} - ${date ? new Date(date).toLocaleDateString() : 'No date'}`,
+        title: `${title} (${statusLabels[status] || status})`,
+        subtitle: `${subtitle} - ${date ? new Date(date).toLocaleDateString('hu-HU') : 'Nincs dátum'}`,
       };
     },
   },

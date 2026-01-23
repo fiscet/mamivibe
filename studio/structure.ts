@@ -5,17 +5,18 @@ import { singletonTypes } from './schemaTypes';
 
 // Singleton page configurations
 const singletonPages = [
-  { type: 'homePage', title: 'Home', icon: FaHome, documentId: 'homePage' },
-  { type: 'aboutPage', title: 'About', icon: FaUser, documentId: 'aboutPage' },
-  { type: 'servicesPage', title: 'Services', icon: FaTags, documentId: 'servicesPage' },
-  { type: 'bookingPage', title: 'Booking', icon: FaCalendarAlt, documentId: 'bookingPage' },
-  { type: 'contactPage', title: 'Contact', icon: FaEnvelope, documentId: 'contactPage' },
+  { type: 'homePage', title: 'Főoldal', icon: FaHome, documentId: 'homePage' },
+  { type: 'aboutPage', title: 'Rólam', icon: FaUser, documentId: 'aboutPage' },
+  { type: 'servicesPage', title: 'Szolgáltatások', icon: FaTags, documentId: 'servicesPage' },
+  { type: 'bookingPage', title: 'Időpontfoglalás', icon: FaCalendarAlt, documentId: 'bookingPage' },
+  { type: 'contactPage', title: 'Kapcsolat', icon: FaEnvelope, documentId: 'contactPage' },
 ];
 
 // Define the groups for the structure
 const groups = [
   {
-    name: 'Bookings',
+    id: 'bookings',
+    title: 'Foglalások',
     icon: FaCalendarCheck,
     menuGroups: [
       ['appointment'],
@@ -23,7 +24,8 @@ const groups = [
     ]
   },
   {
-    name: 'Feedback',
+    id: 'feedback',
+    title: 'Visszajelzések',
     icon: FaStar,
     menuGroups: [
       ['review'],
@@ -31,7 +33,8 @@ const groups = [
     ]
   },
   {
-    name: 'Configuration',
+    id: 'configuration',
+    title: 'Beállítások',
     icon: FaTags,
     menuGroups: [
       ['service'],
@@ -66,12 +69,12 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
         .items([
           // Pages Group - Singleton pages like Strapi single types
           S.listItem()
-            .title('Pages')
+            .title('Oldalak')
             .id('pages')
             .icon(FaFileAlt)
             .child(
               S.list()
-                .title('Pages')
+                .title('Oldalak')
                 .items(
                   singletonPages.map((page) =>
                     S.listItem()
@@ -90,31 +93,31 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
 
           S.divider(),
 
-          // Other groups (Bookings, Feedback, Configuration)
+          // Other groups (Foglalások, Visszajelzések, Beállítások)
           ...groups.map((group) => {
-            let title = group.name;
-            if (group.name === 'Feedback' && totalCount > 0) {
-              title = `${group.name} (${totalCount})`;
+            let displayTitle = group.title;
+            if (group.id === 'feedback' && totalCount > 0) {
+              displayTitle = `${group.title} (${totalCount})`;
             }
 
             const item = S.listItem()
-              .title(title)
-              .id(group.name.toLowerCase())
+              .title(displayTitle)
+              .id(group.id)
               .icon(group.icon ?? null);
 
             return item.child(
               S.list()
-                .title(title)
+                .title(displayTitle)
                 .items([
                   ...group.menuGroups.flatMap(menuGroup =>
                     menuGroup.map(sType => {
-                      let sTitle = sType === 'review' ? 'Review' :
-                        sType === 'contactMessage' ? 'Contact Message' : sType;
+                      let sTitle = sType === 'review' ? 'Értékelések' :
+                        sType === 'contactMessage' ? 'Üzenetek' : sType;
 
                       if (sType === 'review' && rCount > 0) {
-                        sTitle = `Reviews (${rCount})`;
+                        sTitle = `Értékelések (${rCount})`;
                       } else if (sType === 'contactMessage' && mCount > 0) {
-                        sTitle = `Contact Messages (${mCount})`;
+                        sTitle = `Üzenetek (${mCount})`;
                       }
 
                       return S.documentTypeListItem(sType)
@@ -131,7 +134,7 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
 
           // Blog/News pages (using the generic page type)
           S.documentTypeListItem('page')
-            .title('Blog / News')
+            .title('Blog / Hírek')
             .icon(FaFileAlt),
 
           // Filter out singleton types and already grouped types from the fallback

@@ -3,35 +3,35 @@ import { FaUser } from 'react-icons/fa';
 
 export const aboutPage = defineType({
   name: 'aboutPage',
-  title: 'About Page',
+  title: 'Rólam oldal',
   type: 'document',
   icon: FaUser,
   groups: [
-    { name: 'hero', title: 'Hero Section' },
-    { name: 'bio', title: 'Bio Section' },
-    { name: 'credentials', title: 'Credentials' },
-    { name: 'values', title: 'Values' },
-    { name: 'cta', title: 'Call to Action' },
+    { name: 'hero', title: 'Főszekció' },
+    { name: 'bio', title: 'Bemutatkozás' },
+    { name: 'credentials', title: 'Képesítések' },
+    { name: 'values', title: 'Értékek' },
+    { name: 'cta', title: 'Cselekvésre ösztönzés' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
     // Hero Section
     defineField({
       name: 'hero',
-      title: 'Hero Section',
+      title: 'Főszekció',
       type: 'object',
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'title',
-          title: 'Title',
+          title: 'Cím',
           type: 'string',
           validation: (rule) => rule.required(),
         }),
         defineField({
           name: 'subtitle',
-          title: 'Subtitle',
+          title: 'Alcím',
           type: 'text',
           rows: 2,
         }),
@@ -41,47 +41,47 @@ export const aboutPage = defineType({
     // Bio Section
     defineField({
       name: 'bio',
-      title: 'Bio Section',
+      title: 'Bemutatkozás szekció',
       type: 'object',
       group: 'bio',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'profileImage',
-          title: 'Profile Image',
+          title: 'Profilkép',
           type: 'image',
           options: { hotspot: true },
         }),
         defineField({
           name: 'experienceBadge',
-          title: 'Experience Badge',
+          title: 'Tapasztalat jelvény',
           type: 'object',
-          description: 'Small badge showing years of experience',
+          description: 'Kis jelvény a tapasztalati évek megjelenítéséhez',
           fields: [
             defineField({
               name: 'number',
-              title: 'Number',
+              title: 'Szám',
               type: 'string',
-              description: 'e.g., "10+"',
+              description: 'pl. "10+"',
             }),
             defineField({
               name: 'label',
-              title: 'Label',
+              title: 'Felirat',
               type: 'string',
-              description: 'e.g., "Év tapasztalat"',
+              description: 'pl. "Év tapasztalat"',
             }),
           ],
         }),
         defineField({
           name: 'name',
-          title: 'Name',
+          title: 'Név',
           type: 'string',
         }),
         defineField({
           name: 'content',
-          title: 'Bio Content',
+          title: 'Bemutatkozás szövege',
           type: 'portableTextContent',
-          description: 'Main biography text',
+          description: 'Fő életrajzi szöveg',
         }),
       ],
     }),
@@ -89,7 +89,7 @@ export const aboutPage = defineType({
     // Credentials Section
     defineField({
       name: 'credentials',
-      title: 'Credentials',
+      title: 'Képesítések',
       type: 'array',
       group: 'credentials',
       of: [
@@ -98,40 +98,40 @@ export const aboutPage = defineType({
           fields: [
             defineField({
               name: 'icon',
-              title: 'Icon',
+              title: 'Ikon',
               type: 'string',
               options: {
                 list: [
-                  { title: 'Graduation Cap', value: 'FaGraduationCap' },
-                  { title: 'Heart', value: 'FaHeart' },
-                  { title: 'Certificate', value: 'FaCertificate' },
-                  { title: 'Award', value: 'FaAward' },
-                  { title: 'Book', value: 'FaBook' },
-                  { title: 'Stethoscope', value: 'FaStethoscope' },
+                  { title: 'Diplomasapka', value: 'FaGraduationCap' },
+                  { title: 'Szív', value: 'FaHeart' },
+                  { title: 'Tanúsítvány', value: 'FaCertificate' },
+                  { title: 'Díj', value: 'FaAward' },
+                  { title: 'Könyv', value: 'FaBook' },
+                  { title: 'Sztetoszkóp', value: 'FaStethoscope' },
                 ],
               },
             }),
             defineField({
               name: 'iconColor',
-              title: 'Icon Color',
+              title: 'Ikon színe',
               type: 'string',
               options: {
                 list: [
-                  { title: 'Pink', value: 'pink' },
-                  { title: 'Violet', value: 'violet' },
-                  { title: 'Blue', value: 'blue' },
-                  { title: 'Green', value: 'green' },
+                  { title: 'Rózsaszín', value: 'pink' },
+                  { title: 'Lila', value: 'violet' },
+                  { title: 'Kék', value: 'blue' },
+                  { title: 'Zöld', value: 'green' },
                 ],
               },
               initialValue: 'pink',
             }),
-            defineField({ name: 'title', title: 'Title', type: 'string' }),
-            defineField({ name: 'description', title: 'Description', type: 'text', rows: 2 }),
+            defineField({ name: 'title', title: 'Cím', type: 'string' }),
+            defineField({ name: 'description', title: 'Leírás', type: 'text', rows: 2 }),
           ],
           preview: {
             select: { title: 'title', icon: 'icon' },
             prepare({ title, icon }) {
-              return { title: title || 'Credential', subtitle: icon };
+              return { title: title || 'Képesítés', subtitle: icon };
             },
           },
         },
@@ -141,19 +141,19 @@ export const aboutPage = defineType({
     // Values Section
     defineField({
       name: 'values',
-      title: 'Values Section',
+      title: 'Értékek szekció',
       type: 'object',
       group: 'values',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'sectionTitle',
-          title: 'Section Title',
+          title: 'Szekció címe',
           type: 'string',
         }),
         defineField({
           name: 'items',
-          title: 'Value Items',
+          title: 'Érték elemek',
           type: 'array',
           of: [{ type: 'valueCard' }],
         }),
@@ -163,7 +163,7 @@ export const aboutPage = defineType({
     // CTA Section
     defineField({
       name: 'cta',
-      title: 'Call to Action Section',
+      title: 'Cselekvésre ösztönzés szekció',
       type: 'ctaBlock',
       group: 'cta',
     }),
@@ -171,7 +171,7 @@ export const aboutPage = defineType({
     // SEO
     defineField({
       name: 'seo',
-      title: 'SEO Settings',
+      title: 'SEO beállítások',
       type: 'seoFields',
       group: 'seo',
     }),
@@ -179,8 +179,8 @@ export const aboutPage = defineType({
   preview: {
     prepare() {
       return {
-        title: 'About Page',
-        subtitle: 'About me / Bio page',
+        title: 'Rólam oldal',
+        subtitle: 'Bemutatkozó / Életrajz oldal',
       };
     },
   },

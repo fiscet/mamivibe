@@ -3,40 +3,40 @@ import { FaTags } from 'react-icons/fa';
 
 export const servicesPage = defineType({
   name: 'servicesPage',
-  title: 'Services Page',
+  title: 'Szolgáltatások oldal',
   type: 'document',
   icon: FaTags,
   groups: [
-    { name: 'hero', title: 'Hero Section' },
-    { name: 'content', title: 'Content' },
+    { name: 'hero', title: 'Főszekció' },
+    { name: 'content', title: 'Tartalom' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
     // Hero Section
     defineField({
       name: 'hero',
-      title: 'Hero Section',
+      title: 'Főszekció',
       type: 'object',
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'title',
-          title: 'Title',
+          title: 'Cím',
           type: 'string',
           validation: (rule) => rule.required(),
         }),
         defineField({
           name: 'subtitle',
-          title: 'Subtitle',
+          title: 'Alcím',
           type: 'text',
           rows: 2,
         }),
         defineField({
           name: 'badge',
-          title: 'Badge Text',
+          title: 'Jelvény szöveg',
           type: 'string',
-          description: 'Small badge below subtitle (e.g., "💻 Online konzultáció • 🏠 Személyes tanácsadás")',
+          description: 'Kis jelvény az alcím alatt (pl. "💻 Online konzultáció • 🏠 Személyes tanácsadás")',
         }),
       ],
     }),
@@ -44,16 +44,16 @@ export const servicesPage = defineType({
     // Content Section
     defineField({
       name: 'emptyStateMessage',
-      title: 'Empty State Message',
+      title: 'Üres állapot üzenet',
       type: 'string',
       group: 'content',
-      description: 'Message to show when no services are available',
+      description: 'Üzenet, ami megjelenik, ha nincsenek elérhető szolgáltatások',
     }),
 
     // SEO
     defineField({
       name: 'seo',
-      title: 'SEO Settings',
+      title: 'SEO beállítások',
       type: 'seoFields',
       group: 'seo',
     }),
@@ -61,8 +61,8 @@ export const servicesPage = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Services Page',
-        subtitle: 'Services listing page',
+        title: 'Szolgáltatások oldal',
+        subtitle: 'Szolgáltatások listázó oldal',
       };
     },
   },

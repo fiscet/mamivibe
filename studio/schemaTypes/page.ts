@@ -2,14 +2,14 @@ import { defineField, defineType } from 'sanity';
 
 export const page = defineType({
   name: 'page',
-  title: 'Page',
+  title: 'Oldal',
   type: 'document',
   fields: [
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'URL azonosító',
       type: 'slug',
-      description: 'Unique identifier for the page (e.g., "about", "home")',
+      description: 'Az oldal egyedi azonosítója (pl. "rolam", "fooldal")',
       options: {
         source: 'title',
         maxLength: 96,
@@ -18,19 +18,19 @@ export const page = defineType({
     }),
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Cím',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'subtitle',
-      title: 'Subtitle',
+      title: 'Alcím',
       type: 'string',
-      description: 'Optional tagline or short description',
+      description: 'Opcionális szlogen vagy rövid leírás',
     }),
     defineField({
       name: 'heroImage',
-      title: 'Hero Image',
+      title: 'Főkép',
       type: 'image',
       options: {
         hotspot: true,
@@ -38,33 +38,33 @@ export const page = defineType({
     }),
     defineField({
       name: 'content',
-      title: 'Content',
+      title: 'Tartalom',
       type: 'array',
       of: [
         {
           type: 'block',
           styles: [
-            { title: 'Normal', value: 'normal' },
+            { title: 'Normál', value: 'normal' },
             { title: 'H2', value: 'h2' },
             { title: 'H3', value: 'h3' },
             { title: 'H4', value: 'h4' },
-            { title: 'Quote', value: 'blockquote' },
+            { title: 'Idézet', value: 'blockquote' },
           ],
           lists: [
-            { title: 'Bullet', value: 'bullet' },
-            { title: 'Numbered', value: 'number' },
+            { title: 'Felsorolás', value: 'bullet' },
+            { title: 'Számozott', value: 'number' },
           ],
           marks: {
             decorators: [
-              { title: 'Strong', value: 'strong' },
-              { title: 'Emphasis', value: 'em' },
-              { title: 'Underline', value: 'underline' },
+              { title: 'Félkövér', value: 'strong' },
+              { title: 'Dőlt', value: 'em' },
+              { title: 'Aláhúzott', value: 'underline' },
             ],
             annotations: [
               {
                 name: 'link',
                 type: 'object',
-                title: 'Link',
+                title: 'Hivatkozás',
                 fields: [
                   {
                     name: 'href',
@@ -89,13 +89,13 @@ export const page = defineType({
             {
               name: 'alt',
               type: 'string',
-              title: 'Alt text',
-              description: 'Alternative text for accessibility',
+              title: 'Alternatív szöveg',
+              description: 'Akadálymentességi leírás',
             },
             {
               name: 'caption',
               type: 'string',
-              title: 'Caption',
+              title: 'Képaláírás',
             },
           ],
         },
@@ -103,7 +103,7 @@ export const page = defineType({
     }),
     defineField({
       name: 'seo',
-      title: 'SEO Settings',
+      title: 'SEO beállítások',
       type: 'object',
       options: {
         collapsible: true,
@@ -112,57 +112,57 @@ export const page = defineType({
       fields: [
         defineField({
           name: 'metaTitle',
-          title: 'Meta Title',
+          title: 'Meta cím',
           type: 'string',
-          description: 'Override the page title for search engines (50-60 characters recommended)',
+          description: 'Az oldal címének felülírása keresőmotorok számára (50-60 karakter ajánlott)',
           validation: (rule) => rule.max(70),
         }),
         defineField({
           name: 'metaDescription',
-          title: 'Meta Description',
+          title: 'Meta leírás',
           type: 'text',
           rows: 3,
-          description: 'Description for search engines (150-160 characters recommended)',
+          description: 'Leírás keresőmotorok számára (150-160 karakter ajánlott)',
           validation: (rule) => rule.max(200),
         }),
         defineField({
           name: 'keywords',
-          title: 'Keywords',
+          title: 'Kulcsszavak',
           type: 'array',
           of: [{ type: 'string' }],
           options: {
             layout: 'tags',
           },
-          description: 'Relevant keywords for search engines',
+          description: 'Releváns kulcsszavak keresőmotorok számára',
         }),
         defineField({
           name: 'ogImage',
-          title: 'Open Graph Image',
+          title: 'Open Graph kép',
           type: 'image',
-          description: 'Image for social sharing (recommended: 1200x630px)',
+          description: 'Kép közösségi megosztáshoz (ajánlott: 1200x630px)',
           options: {
             hotspot: true,
           },
           fields: [
             defineField({
               name: 'alt',
-              title: 'Alt Text',
+              title: 'Alternatív szöveg',
               type: 'string',
-              description: 'Alternative text for the image',
+              description: 'A kép alternatív szövege',
             }),
           ],
         }),
         defineField({
           name: 'canonicalUrl',
-          title: 'Canonical URL',
+          title: 'Kanonikus URL',
           type: 'url',
-          description: 'Override the canonical URL if this content appears elsewhere',
+          description: 'Kanonikus URL felülírása, ha a tartalom máshol is megjelenik',
         }),
         defineField({
           name: 'noIndex',
-          title: 'Hide from Search Engines',
+          title: 'Elrejtés keresőmotorok elől',
           type: 'boolean',
-          description: 'Enable to prevent this page from being indexed by search engines',
+          description: 'Engedélyezd, hogy az oldal ne legyen indexelve keresőmotorok által',
           initialValue: false,
         }),
       ],
@@ -175,7 +175,7 @@ export const page = defineType({
     },
     prepare({ title, slug }) {
       return {
-        title: title || 'Untitled',
+        title: title || 'Névtelen',
         subtitle: `/${slug || ''}`,
       };
     },
