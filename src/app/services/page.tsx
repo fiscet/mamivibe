@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { FaClock, FaTag } from 'react-icons/fa';
 import { revalidateTime } from '@/lib/config';
 
-// Enable revalidation for fresh data (0 in dev, 60s in prod)
 export const revalidate = revalidateTime;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';

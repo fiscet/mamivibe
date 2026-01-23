@@ -5,7 +5,6 @@ import { FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 import ContactForm from '@/components/ContactForm';
 import { revalidateTime } from '@/lib/config';
 
-// Enable revalidation for fresh data (0 in dev, 60s in prod)
 export const revalidate = revalidateTime;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
