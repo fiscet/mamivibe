@@ -1,12 +1,25 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { SITE_CONFIG, NAV_ITEMS, BOOKING_CTA } from '@/lib/config';
+import { NAV_ITEMS, BOOKING_CTA, SITE_CONFIG } from '@/lib/config';
 
-const Navbar = () => {
+interface SiteSettingsData {
+  siteName?: string;
+  logoUrl?: string;
+  logoAlt?: string;
+  logoWidth?: number;
+  logoHeight?: number;
+}
+
+interface NavbarProps {
+  siteSettings?: SiteSettingsData | null;
+}
+
+const Navbar = ({ siteSettings }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -17,16 +30,32 @@ const Navbar = () => {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  const siteName = siteSettings?.siteName || SITE_CONFIG.name;
+  const logoUrl = siteSettings?.logoUrl;
+  const logoAlt = siteSettings?.logoAlt || siteName;
+  const logoWidth = siteSettings?.logoWidth || 150;
+  const logoHeight = siteSettings?.logoHeight || 50;
+
   return (
     <nav className="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0 flex items-center">
-            <Link
-              href="/"
-              className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-600 bg-clip-text text-transparent"
-            >
-              {SITE_CONFIG.name}
+            <Link href="/" className="flex items-center">
+              {logoUrl ? (
+                <Image
+                  src={logoUrl}
+                  alt={logoAlt}
+                  width={logoWidth}
+                  height={logoHeight}
+                  className="object-contain"
+                  priority
+                />
+              ) : (
+                <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-600 bg-clip-text text-transparent">
+                  {siteName}
+                </span>
+              )}
             </Link>
           </div>
 

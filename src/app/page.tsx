@@ -199,7 +199,7 @@ export default async function Home() {
                   {hero.primaryCTA?.text && (
                     <Link
                       href={hero.primaryCTA.link || '/booking'}
-                      className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
+                      className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white text-center font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
                     >
                       {hero.primaryCTA.text}
                     </Link>
@@ -207,7 +207,7 @@ export default async function Home() {
                   {hero.secondaryCTA?.text && (
                     <Link
                       href={hero.secondaryCTA.link || '/services'}
-                      className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-pink-500 text-pink-600 rounded-full font-bold hover:bg-pink-50 transition-colors"
+                      className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-pink-500 text-pink-600 rounded-full text-center font-bold hover:bg-pink-50 transition-colors"
                     >
                       {hero.secondaryCTA.text}
                     </Link>

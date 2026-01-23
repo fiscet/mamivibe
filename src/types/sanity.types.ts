@@ -204,6 +204,43 @@ export type Slug = {
   source?: string;
 };
 
+export type SiteSettings = {
+  _id: string;
+  _type: "siteSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  siteName?: string;
+  logo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  logoWidth?: number;
+  logoHeight?: number;
+};
+
+export type FooterSettings = {
+  _id: string;
+  _type: "footerSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  description?: string;
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+    twitter?: string;
+    pinterest?: string;
+  };
+};
+
 export type ContactPage = {
   _id: string;
   _type: "contactPage";
@@ -580,6 +617,8 @@ export type AllSanitySchemaTypes =
   | SanityImageHotspot
   | Page
   | Slug
+  | SiteSettings
+  | FooterSettings
   | ContactPage
   | SeoFields
   | BookingPage
