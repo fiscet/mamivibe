@@ -12,9 +12,9 @@ import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
-import { revalidateTime } from '@/lib/config';
 
-export const revalidate = revalidateTime;
+// Enable revalidation for ISR (60 seconds cache)
+export const revalidate = 60;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 

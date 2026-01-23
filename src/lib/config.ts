@@ -7,8 +7,7 @@ export const isDevelopment = process.env.NODE_ENV === 'development';
 export const isProduction = process.env.NODE_ENV === 'production';
 
 /**
- * Revalidation time in seconds for ISR (Incremental Static Regeneration)
- * Using a fixed value of 60 seconds for production builds.
- * Next.js requires segment config exports to be statically analyzable.
+ * Note: Revalidation time for ISR is set directly in page files as a literal value (60).
+ * Next.js requires segment config exports to be statically analyzable,
+ * so imported values cannot be used for `export const revalidate`.
  */
-export const revalidateTime: number = 60;

@@ -3,9 +3,9 @@ import { groq } from 'next-sanity';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { FaClock, FaTag } from 'react-icons/fa';
-import { revalidateTime } from '@/lib/config';
 
-export const revalidate = revalidateTime;
+// Enable revalidation for ISR (60 seconds cache)
+export const revalidate = 60;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
