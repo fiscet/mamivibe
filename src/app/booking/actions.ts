@@ -4,7 +4,7 @@ import { client as sanityClient } from "@/lib/sanity.client";
 import { groq } from "next-sanity";
 import { revalidatePath } from "next/cache";
 
-export async function createAppointment(prevState: any, formData: FormData) {
+export async function createAppointment(prevState: unknown, formData: FormData) {
   const serviceId = formData.get("service") as string;
   const clientName = formData.get("name") as string;
   const email = formData.get("email") as string;
@@ -52,12 +52,13 @@ export async function createAppointment(prevState: any, formData: FormData) {
 }
 
 export async function getServices() {
-  return sanityClient.fetch(groq`*[_type == "service"]{
+  return sanityClient.fetch(groq`*[_type == "service"] | order(position asc){
         _id,
         title,
         duration,
         price,
-        description
+        description,
+        position
     }`);
 }
 

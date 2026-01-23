@@ -15,11 +15,10 @@ import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
 import type { ValueCard, AboutPage } from '@/types/sanity.types';
+import { SITE_CONFIG } from '@/lib/config';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
 // Icon mapping for dynamic icon rendering
 const iconMap: Record<
@@ -110,7 +109,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords: keywords.join(', '),
     alternates: {
-      canonical: pageData?.seo?.canonicalUrl || `${BASE_URL}/about`
+      canonical: pageData?.seo?.canonicalUrl || `${SITE_CONFIG.baseUrl}/about`
     },
     robots: pageData?.seo?.noIndex
       ? { index: false, follow: false }
@@ -118,9 +117,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: `${BASE_URL}/about`,
-      siteName: 'Mamivibe',
-      locale: 'hu_HU',
+      url: `${SITE_CONFIG.baseUrl}/about`,
+      siteName: SITE_CONFIG.name,
+      locale: SITE_CONFIG.locale,
       type: 'website',
       ...(ogImage && {
         images: [

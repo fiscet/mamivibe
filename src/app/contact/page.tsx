@@ -3,11 +3,10 @@ import { groq } from 'next-sanity';
 import { Metadata } from 'next';
 import { FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 import ContactForm from '@/components/ContactForm';
+import { SITE_CONFIG } from '@/lib/config';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
 async function getContactPageData() {
   return client.fetch(groq`*[_type == "contactPage" && _id == "contactPage"][0]{
@@ -80,7 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords: keywords.join(', '),
     alternates: {
-      canonical: pageData?.seo?.canonicalUrl || `${BASE_URL}/contact`
+      canonical: pageData?.seo?.canonicalUrl || `${SITE_CONFIG.baseUrl}/contact`
     },
     robots: pageData?.seo?.noIndex
       ? { index: false, follow: false }
@@ -88,9 +87,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: `${BASE_URL}/contact`,
-      siteName: 'Mamivibe',
-      locale: 'hu_HU',
+      url: `${SITE_CONFIG.baseUrl}/contact`,
+      siteName: SITE_CONFIG.name,
+      locale: SITE_CONFIG.locale,
       type: 'website',
       ...(ogImage && {
         images: [
@@ -124,7 +123,7 @@ export default async function ContactPage() {
     number: '+36 30 123 4567',
     hours: 'Hétköznap 9:00 - 17:00'
   };
-  const email = pageData?.contactInfo?.email || { address: 'info@mamivibe.hu' };
+  const email = pageData?.contactInfo?.email || { address: SITE_CONFIG.email };
   const location = pageData?.contactInfo?.location || {
     street: '1111 Budapest, Példa utca 12.',
     note: 'Személyes és online konzultáció is elérhető'

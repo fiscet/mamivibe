@@ -512,10 +512,34 @@
           "type": "string"
         }
       },
+      "position": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
       "title": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        },
+        "optional": true
+      },
+      "meetingType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "online"
+            },
+            {
+              "type": "string",
+              "value": "in-person"
+            }
+          ]
         },
         "optional": true
       },
@@ -524,6 +548,10 @@
         "value": {
           "type": "union",
           "of": [
+            {
+              "type": "number",
+              "value": 10
+            },
             {
               "type": "number",
               "value": 30
@@ -544,6 +572,13 @@
         "type": "objectAttribute",
         "value": {
           "type": "number"
+        },
+        "optional": true
+      },
+      "priceDisplay": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       },

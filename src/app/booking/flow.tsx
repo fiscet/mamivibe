@@ -1,22 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { format, startOfMonth, endOfMonth, addMinutes, parse, isBefore } from 'date-fns';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  addMinutes,
+  parse,
+  isBefore
+} from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import { hu } from 'date-fns/locale';
 import { getAvailability, getSlotsForDate } from './actions';
 import { BookingForm } from './booking-form';
 import 'react-day-picker/dist/style.css';
-import { FaCalendarAlt, FaClock, FaCheckCircle, FaArrowLeft, FaLaptop, FaUserFriends, FaClipboardList } from 'react-icons/fa';
+import {
+  FaCalendarAlt,
+  FaClock,
+  FaArrowLeft,
+  FaClipboardList
+} from 'react-icons/fa';
+import { Service } from '@/types/sanity.types';
 
 type BookingFlowProps = {
-  services: any[];
+  services: Service[];
   preselectedServiceId?: string;
+  preselectedMeetingType?: 'online' | 'in-person';
 };
 
-type Step = 'calendar' | 'service' | 'mode' | 'slots' | 'form';
+type Step = 'calendar' | 'service' | 'slots' | 'form';
 
-export default function BookingFlow({ services, preselectedServiceId }: BookingFlowProps) {
+export default function BookingFlow({
+  services,
+  preselectedServiceId,
+  preselectedMeetingType
+}: BookingFlowProps) {
   const [step, setStep] = useState<Step>('calendar');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availableDays, setAvailableDays] = useState<string[]>([]);
@@ -25,11 +43,12 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // New State for Refactor
-  const [selectedServiceId, setSelectedServiceId] = useState<string | undefined>(preselectedServiceId);
-  const [meetingType, setMeetingType] = useState<'online' | 'in-person' | null>(null);
+  // Service selection state
+  const [selectedServiceId, setSelectedServiceId] = useState<
+    string | undefined
+  >(preselectedServiceId);
 
-  const selectedService = services.find(s => s._id === selectedServiceId);
+  const selectedService = services.find((s) => s._id === selectedServiceId);
 
   // Fetch monthly availability when month changes (or on mount)
   const handleMonthChange = async (month: Date) => {
@@ -38,9 +57,11 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
     const end = format(endOfMonth(month), 'yyyy-MM-dd');
     try {
       const data = await getAvailability(start, end);
-      setAvailableDays(data.map((d: any) => d.date));
+      setAvailableDays(
+        data.map((d: { date: string; isFullyBooked: boolean }) => d.date)
+      );
     } catch (error) {
-      console.error("Failed to fetch availability", error);
+      console.error('Failed to fetch availability', error);
     } finally {
       setLoading(false);
     }
@@ -54,16 +75,16 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
   // Recalculate valid slots whenever relevant state changes
   useEffect(() => {
     if (step === 'slots' && availableSlots.length > 0 && selectedService) {
-      filterSlots(availableSlots, selectedService.duration);
+      filterSlots(availableSlots, selectedService.duration as number);
     }
   }, [step, availableSlots, selectedService]);
 
   const filterSlots = (slots: string[], duration: number) => {
     // Assuming slots are every 30 mins (08:00, 08:30, etc.)
     // We need to find start times where enough consecutive slots exist to cover duration.
-    // Logic: 
+    // Logic:
     // 1. Convert all slots to Date objects for easier math
-    // 2. For each slot, check if (slot + duration) <= any subsequent slot end? 
+    // 2. For each slot, check if (slot + duration) <= any subsequent slot end?
     //    Simplification: Check if we have consecutive 30-min blocks.
     //    Duration is in minutes. 60 mins needed = 2 slots. 90 mins = 3 slots.
 
@@ -82,7 +103,7 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
       // Check continuity
       let isContinuous = true;
       // We checking if the sequence [i, i+1, ... i+slotsNeeded-1] exists and is consecutive?
-      // Actually, 'availableTimes' form Sanity might be ["08:00", "08:30", "10:00"]. 
+      // Actually, 'availableTimes' form Sanity might be ["08:00", "08:30", "10:00"].
       // 08:00 is valid for 60m if 08:30 exists.
       // 08:30 is valid for 60m if 09:00 exists. (Wait, 09:00 not in list -> invalid)
 
@@ -106,7 +127,6 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
     setValidSlots(validStartTimes);
   };
 
-
   const handleDayClick = async (day: Date) => {
     const dateStr = format(day, 'yyyy-MM-dd');
     if (!availableDays.includes(dateStr)) return;
@@ -122,11 +142,11 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
         if (!selectedServiceId) {
           setStep('service');
         } else {
-          setStep('mode');
+          setStep('slots');
         }
       }
     } catch (error) {
-      console.error("Error fetching slots", error);
+      console.error('Error fetching slots', error);
     } finally {
       setLoading(false);
     }
@@ -134,11 +154,6 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
 
   const handleServiceSelect = (id: string) => {
     setSelectedServiceId(id);
-    setStep('mode');
-  };
-
-  const handleModeSelect = (type: 'online' | 'in-person') => {
-    setMeetingType(type);
     setStep('slots');
   };
 
@@ -149,13 +164,18 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
 
   const goBack = () => {
     if (step === 'form') setStep('slots');
-    else if (step === 'slots') setStep('mode');
-    else if (step === 'mode') setStep('service'); // Or calendar if service was preselected? Let's just go 'service' to allow change
-    else if (step === 'service') setStep('calendar');
+    else if (step === 'slots') {
+      if (preselectedServiceId) {
+        setStep('calendar');
+      } else {
+        setStep('service');
+      }
+    } else if (step === 'service') setStep('calendar');
   };
 
   const modifiers = {
-    available: (date: Date) => availableDays.includes(format(date, 'yyyy-MM-dd'))
+    available: (date: Date) =>
+      availableDays.includes(format(date, 'yyyy-MM-dd'))
   };
 
   const modifiersStyles = {
@@ -171,18 +191,24 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
       {/* Header / Progress */}
       <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
         {step !== 'calendar' && (
-          <button onClick={goBack} className="text-gray-500 hover:text-pink-600 flex items-center gap-2 text-sm font-medium transition-colors">
+          <button
+            onClick={goBack}
+            className="text-gray-500 hover:text-pink-600 flex items-center gap-2 text-sm font-medium transition-colors"
+          >
             <FaArrowLeft /> Vissza
           </button>
         )}
         <div className="flex gap-2">
-          {['calendar', 'service', 'mode', 'slots', 'form'].map((s) => (
-            <div key={s} className={`w-2.5 h-2.5 rounded-full transition-colors ${
-              // Simple progress logic
-              ['calendar', 'service', 'mode', 'slots', 'form'].indexOf(step) >= ['calendar', 'service', 'mode', 'slots', 'form'].indexOf(s)
-                ? 'bg-pink-500'
-                : 'bg-pink-200'
-              }`}></div>
+          {['calendar', 'service', 'slots', 'form'].map((s) => (
+            <div
+              key={s}
+              className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                ['calendar', 'service', 'slots', 'form'].indexOf(step) >=
+                ['calendar', 'service', 'slots', 'form'].indexOf(s)
+                  ? 'bg-pink-500'
+                  : 'bg-pink-200'
+              }`}
+            ></div>
           ))}
         </div>
       </div>
@@ -209,72 +235,59 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
                 onMonthChange={handleMonthChange}
                 modifiers={modifiers}
                 modifiersStyles={modifiersStyles}
-                disabled={(date) => !availableDays.includes(format(date, 'yyyy-MM-dd')) || isBefore(date, new Date())}
+                disabled={(date) =>
+                  !availableDays.includes(format(date, 'yyyy-MM-dd')) ||
+                  isBefore(date, new Date())
+                }
                 locale={hu}
               />
             </div>
-            {loading && <p className="mt-4 text-gray-400 text-sm animate-pulse">Betöltés...</p>}
-            <p className="mt-4 text-xs text-gray-400">Csak a zölddel jelölt napokon van elérhető időpont.</p>
+            {loading && (
+              <p className="mt-4 text-gray-400 text-sm animate-pulse">
+                Betöltés...
+              </p>
+            )}
+            <p className="mt-4 text-xs text-gray-400">
+              Csak a zölddel jelölt napokon van elérhető időpont.
+            </p>
           </div>
         )}
 
         {step === 'service' && (
           <div className="flex flex-col items-center animate-in fade-in slide-in-from-right-4 duration-300 w-full max-w-lg mx-auto">
             <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <FaClipboardList className="text-pink-500" /> Válassz szolgáltatást
+              <FaClipboardList className="text-pink-500" /> Válassz
+              szolgáltatást
             </h3>
             {services.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">Jelenleg nincs elérhető szolgáltatás.</p>
+                <p className="text-gray-500 mb-4">
+                  Jelenleg nincs elérhető szolgáltatás.
+                </p>
               </div>
             ) : (
               <div className="w-full space-y-3">
-                {services.map(s => (
+                {services.map((s) => (
                   <button
                     key={s._id}
                     onClick={() => handleServiceSelect(s._id)}
-                    className={`w-full p-4 rounded-xl border-2 text-left transition-all flex justify-between items-center ${selectedServiceId === s._id ? 'border-pink-500 bg-pink-50' : 'border-gray-100 hover:border-pink-300'}`}
+                    className={`w-full p-4 rounded-xl border-2 text-left transition-all flex justify-between items-center ${
+                      selectedServiceId === s._id
+                        ? 'border-pink-500 bg-pink-50'
+                        : 'border-gray-100 hover:border-pink-300'
+                    }`}
                   >
                     <div>
                       <h4 className="font-bold text-gray-900">{s.title}</h4>
                       <p className="text-sm text-gray-500">{s.duration} perc</p>
                     </div>
-                    <span className="font-bold text-pink-600">{s.price} Ft</span>
+                    <span className="font-bold text-pink-600">
+                      {s.price} Ft
+                    </span>
                   </button>
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {step === 'mode' && (
-          <div className="flex flex-col items-center animate-in fade-in slide-in-from-right-4 duration-300 w-full max-w-lg mx-auto">
-            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              Válassz konzultációs módot
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-              <button
-                onClick={() => handleModeSelect('online')}
-                className="flex flex-col items-center p-6 rounded-xl border-2 border-gray-100 hover:border-pink-500 hover:bg-pink-50 transition-all gap-3 group"
-              >
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 group-hover:bg-white group-hover:text-pink-500 transition-colors">
-                  <FaLaptop size={32} />
-                </div>
-                <span className="font-bold text-gray-900">Online</span>
-                <span className="text-xs text-gray-500 text-center">Videochaten keresztül</span>
-              </button>
-
-              <button
-                onClick={() => handleModeSelect('in-person')}
-                className="flex flex-col items-center p-6 rounded-xl border-2 border-gray-100 hover:border-pink-500 hover:bg-pink-50 transition-all gap-3 group"
-              >
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 group-hover:bg-white group-hover:text-pink-500 transition-colors">
-                  <FaUserFriends size={32} />
-                </div>
-                <span className="font-bold text-gray-900">Személyesen</span>
-                <span className="text-xs text-gray-500 text-center">A rendelőben</span>
-              </button>
-            </div>
           </div>
         )}
 
@@ -283,24 +296,37 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
             <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <FaClock className="text-pink-500" /> Válassz időpontot
             </h3>
-            <p className="text-gray-500 mb-2">{selectedDate && format(selectedDate, 'yyyy. MMMM d.', { locale: hu })}</p>
+            <p className="text-gray-500 mb-2">
+              {selectedDate &&
+                format(selectedDate, 'yyyy. MMMM d.', { locale: hu })}
+            </p>
             <p className="text-sm text-pink-600 mb-8 font-medium">
               {selectedService?.title} ({selectedService?.duration} perc)
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-sm">
-              {validSlots.length > 0 ? validSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => handleSlotSelect(time)}
-                  className="py-3 px-4 rounded-xl border border-gray-200 hover:border-pink-500 hover:bg-pink-50 text-gray-700 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-pink-500"
-                >
-                  {time}
-                </button>
-              )) : (
+              {validSlots.length > 0 ? (
+                validSlots.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => handleSlotSelect(time)}
+                    className="py-3 px-4 rounded-xl border border-gray-200 hover:border-pink-500 hover:bg-pink-50 text-gray-700 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  >
+                    {time}
+                  </button>
+                ))
+              ) : (
                 <div className="col-span-full text-center py-4">
-                  <p className="text-gray-500 mb-2">Sajnos nincs elég hosszú szabad időszak ezen a napon ehhez a szolgáltatáshoz.</p>
-                  <button onClick={() => setStep('calendar')} className="text-pink-600 font-medium hover:underline">Válassz másik napot</button>
+                  <p className="text-gray-500 mb-2">
+                    Sajnos nincs elég hosszú szabad időszak ezen a napon ehhez a
+                    szolgáltatáshoz.
+                  </p>
+                  <button
+                    onClick={() => setStep('calendar')}
+                    className="text-pink-600 font-medium hover:underline"
+                  >
+                    Válassz másik napot
+                  </button>
                 </div>
               )}
             </div>
@@ -310,9 +336,16 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
         {step === 'form' && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="bg-pink-50 p-4 rounded-xl mb-6 border border-pink-100 text-sm space-y-2">
-              <p><strong className="text-gray-900">Szolgáltatás:</strong> {selectedService?.title}</p>
-              <p><strong className="text-gray-900">Időpont:</strong> {selectedDate && format(selectedDate, 'yyyy. MMMM d.', { locale: hu })} - {selectedSlot}</p>
-              <p><strong className="text-gray-900">Helyszín:</strong> {meetingType === 'online' ? 'Online' : 'Személyesen'}</p>
+              <p>
+                <strong className="text-gray-900">Szolgáltatás:</strong>{' '}
+                {selectedService?.title}
+              </p>
+              <p>
+                <strong className="text-gray-900">Időpont:</strong>{' '}
+                {selectedDate &&
+                  format(selectedDate, 'yyyy. MMMM d.', { locale: hu })}{' '}
+                - {selectedSlot}
+              </p>
             </div>
 
             <BookingForm
@@ -320,7 +353,7 @@ export default function BookingFlow({ services, preselectedServiceId }: BookingF
               preselectedServiceId={selectedServiceId}
               selectedDate={selectedDate}
               selectedSlot={selectedSlot}
-              meetingType={meetingType}
+              meetingType={preselectedMeetingType}
             />
           </div>
         )}

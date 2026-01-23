@@ -103,9 +103,12 @@ export type Service = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  position?: number;
   title?: string;
-  duration?: 30 | 60 | 90;
+  meetingType?: "online" | "in-person";
+  duration?: 10 | 30 | 60 | 90;
   price?: number;
+  priceDisplay?: string;
   description?: string;
   image?: {
     asset?: SanityImageAssetReference;

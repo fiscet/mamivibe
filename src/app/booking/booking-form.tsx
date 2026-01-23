@@ -1,33 +1,72 @@
 'use client';
 
 import { useActionState } from 'react';
-import { createAppointment } from "./actions";
-import { FaCalendar, FaUser, FaEnvelope, FaPhone, FaStickyNote } from 'react-icons/fa';
+import { createAppointment } from './actions';
+import {
+  FaCalendar,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaStickyNote
+} from 'react-icons/fa';
+import { Service } from '@/types/sanity.types';
 
 const initialState = {
   message: '',
   success: false
 };
 
-export function BookingForm({ services, preselectedServiceId, selectedDate, selectedSlot, meetingType }: { services: any[], preselectedServiceId?: string | null, selectedDate?: Date, selectedSlot?: string | null, meetingType?: 'online' | 'in-person' | null; }) {
-  const [state, formAction, isPending] = useActionState(createAppointment, initialState);
+export function BookingForm({
+  services,
+  preselectedServiceId,
+  selectedDate,
+  selectedSlot,
+  meetingType
+}: {
+  services: Service[];
+  preselectedServiceId?: string | null;
+  selectedDate?: Date;
+  selectedSlot?: string | null;
+  meetingType?: 'online' | 'in-person';
+}) {
+  const [state, formAction, isPending] = useActionState(
+    createAppointment,
+    initialState
+  );
 
   if (state?.success) {
     return (
       <div className="text-center py-10">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+          <svg
+            className="w-8 h-8 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Foglalási igény elküldve!</h3>
-        <p className="text-gray-600">Hamarosan felveszem veled a kapcsolatot a megadott elérhetőségeken.</p>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
+          Foglalási igény elküldve!
+        </h3>
+        <p className="text-gray-600">
+          Hamarosan felveszem veled a kapcsolatot a megadott elérhetőségeken.
+        </p>
       </div>
     );
   }
 
   // Calculate datetime string for hidden input if steps flow is used
-  const dateTimeString = selectedDate && selectedSlot
-    ? `${selectedDate.toISOString().split('T')[0]}T${selectedSlot}`
-    : undefined;
+  const dateTimeString =
+    selectedDate && selectedSlot
+      ? `${selectedDate.toISOString().split('T')[0]}T${selectedSlot}`
+      : undefined;
 
   return (
     <form action={formAction} className="mt-8 space-y-6">
@@ -39,12 +78,17 @@ export function BookingForm({ services, preselectedServiceId, selectedDate, sele
 
       <div className="space-y-4">
         <div className="mb-4">
-          <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">Szolgáltatás</label>
+          <label
+            htmlFor="service"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Szolgáltatás
+          </label>
           <select
             id="service"
             name="service"
             required
-            defaultValue={preselectedServiceId || ""}
+            defaultValue={preselectedServiceId || ''}
             className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
           >
             <option value="">Válassz szolgáltatást...</option>
@@ -57,7 +101,12 @@ export function BookingForm({ services, preselectedServiceId, selectedDate, sele
         </div>
 
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Név</label>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Név
+          </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaUser className="text-gray-400" />
@@ -74,7 +123,12 @@ export function BookingForm({ services, preselectedServiceId, selectedDate, sele
         </div>
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email cím</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Email cím
+          </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaEnvelope className="text-gray-400" />
@@ -91,7 +145,12 @@ export function BookingForm({ services, preselectedServiceId, selectedDate, sele
         </div>
 
         <div className="mb-4">
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Telefonszám</label>
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Telefonszám
+          </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaPhone className="text-gray-400" />
@@ -108,38 +167,55 @@ export function BookingForm({ services, preselectedServiceId, selectedDate, sele
         </div>
 
         <div className="mb-4">
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">Időpont</label>
+          <label
+            htmlFor="date"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Időpont
+          </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaCalendar className="text-gray-400" />
             </div>
-            <input
-              type="hidden"
-              name="meetingType"
-              value={meetingType || ''}
-            />
+            <input type="hidden" name="meetingType" value={meetingType || ''} />
             <input
               id="date"
               name="date"
-              type={dateTimeString ? "hidden" : "datetime-local"}
+              type={dateTimeString ? 'hidden' : 'datetime-local'}
               defaultValue={dateTimeString}
               required
-              className={dateTimeString ? "hidden" : "pl-10 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"}
+              className={
+                dateTimeString
+                  ? 'hidden'
+                  : 'pl-10 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm'
+              }
             />
             {dateTimeString && (
               <input
                 type="text"
                 readOnly
-                value={`${selectedDate?.toLocaleDateString('hu-HU')} - ${selectedSlot}`}
+                value={`${selectedDate?.toLocaleDateString(
+                  'hu-HU'
+                )} - ${selectedSlot}`}
                 className="pl-10 appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-200 bg-gray-50 text-gray-500 sm:text-sm"
               />
             )}
           </div>
-          {!dateTimeString && <p className="mt-1 text-xs text-gray-500">A kiválasztott időpont csak tájékoztató jellegű, telefonon egyeztetjük a véglegesítést.</p>}
+          {!dateTimeString && (
+            <p className="mt-1 text-xs text-gray-500">
+              A kiválasztott időpont csak tájékoztató jellegű, telefonon
+              egyeztetjük a véglegesítést.
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (opcionális)</label>
+          <label
+            htmlFor="notes"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Megjegyzés (opcionális)
+          </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
               <FaStickyNote className="text-gray-400" />
@@ -153,7 +229,6 @@ export function BookingForm({ services, preselectedServiceId, selectedDate, sele
             />
           </div>
         </div>
-
       </div>
 
       <div>
