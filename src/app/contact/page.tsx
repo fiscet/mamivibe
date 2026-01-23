@@ -4,8 +4,8 @@ import { Metadata } from 'next';
 import { FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 import ContactForm from '@/components/ContactForm';
 
-// Enable revalidation for fresh data
-export const revalidate = 3600;
+// Enable revalidation for ISR (60 seconds cache)
+export const revalidate = 60;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
