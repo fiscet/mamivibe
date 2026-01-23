@@ -14,9 +14,11 @@ import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
+import { revalidateTime } from '@/lib/config';
+import type { ValueCard, AboutPage } from '@/types/sanity.types';
 
-// Enable revalidation for fresh data
-export const revalidate = 3600;
+// Enable revalidation for fresh data (0 in dev, 60s in prod)
+export const revalidate = revalidateTime;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
@@ -318,30 +320,36 @@ export default async function AboutPage() {
               )}
 
               <div className="mt-10 grid grid-cols-2 gap-6">
-                {credentials.map((credential: any, idx: number) => {
-                  const IconComponent =
-                    iconMap[credential.icon] || FaGraduationCap;
-                  const colorClasses = getIconColorClasses(
-                    credential.iconColor
-                  );
-                  return (
-                    <div key={idx} className="flex items-start gap-4">
-                      <div
-                        className={`p-3 ${colorClasses.bg} rounded-lg ${colorClasses.text}`}
-                      >
-                        <IconComponent size={24} />
+                {credentials.map(
+                  (
+                    credential: NonNullable<AboutPage['credentials']>[number],
+                    idx: number
+                  ) => {
+                    const IconComponent =
+                      (credential.icon && iconMap[credential.icon]) ||
+                      FaGraduationCap;
+                    const colorClasses = getIconColorClasses(
+                      credential.iconColor ?? 'pink'
+                    );
+                    return (
+                      <div key={idx} className="flex items-start gap-4">
+                        <div
+                          className={`p-3 ${colorClasses.bg} rounded-lg ${colorClasses.text}`}
+                        >
+                          <IconComponent size={24} />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-gray-900">
+                            {credential.title}
+                          </h4>
+                          <p className="text-sm text-gray-500 text-balance">
+                            {credential.description}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900">
-                          {credential.title}
-                        </h4>
-                        <p className="text-sm text-gray-500 text-balance">
-                          {credential.description}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  }
+                )}
               </div>
             </div>
           </div>
@@ -357,8 +365,9 @@ export default async function AboutPage() {
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {values.map((item: any, idx: number) => {
-              const IconComponent = iconMap[item.icon] || FaHeart;
+            {values.map((item: { _key: string } & ValueCard, idx: number) => {
+              const IconComponent =
+                (item.icon && iconMap[item.icon]) || FaHeart;
               return (
                 <div
                   key={idx}
