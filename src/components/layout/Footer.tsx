@@ -1,8 +1,23 @@
 import Link from 'next/link';
 import { FaFacebook, FaInstagram, FaEnvelope, FaPhone } from 'react-icons/fa';
 import { SITE_CONFIG, NAV_ITEMS } from '@/lib/config';
+import { client } from '@/lib/sanity.client';
+import { groq } from 'next-sanity';
 
-const Footer = () => {
+async function getContactInfo() {
+  return client.fetch(groq`*[_type == "contactPage" && _id == "contactPage"][0]{
+    contactInfo {
+      phone {
+        number
+      }
+    }
+  }`);
+}
+
+const Footer = async () => {
+  const contactData = await getContactInfo();
+  const phoneNumber = contactData?.contactInfo?.phone?.number;
+
   return (
     <footer className="bg-gray-50 pt-16 pb-8 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,15 +60,17 @@ const Footer = () => {
                   {SITE_CONFIG.email}
                 </a>
               </li>
-              <li className="flex items-center text-gray-500 gap-3">
-                <FaPhone className="text-pink-500" />
-                <a
-                  href="tel:+36301234567"
-                  className="hover:text-pink-500 transition-colors"
-                >
-                  +36 30 123 4567
-                </a>
-              </li>
+              {phoneNumber && (
+                <li className="flex items-center text-gray-500 gap-3">
+                  <FaPhone className="text-pink-500" />
+                  <a
+                    href={`tel:${phoneNumber.replace(/\s/g, '')}`}
+                    className="hover:text-pink-500 transition-colors"
+                  >
+                    {phoneNumber}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 

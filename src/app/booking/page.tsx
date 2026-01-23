@@ -107,22 +107,26 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
     meetingType: preselectedMeetingType
   } = await searchParams;
 
-  const heroTitle = pageData?.hero?.title || 'Foglald le az időpontodat';
-  const heroSubtitle =
-    pageData?.hero?.subtitle ||
-    'Válassz egy szabad időpontot a naptárból, majd töltsd ki az űrlapot.';
+  const heroTitle = pageData?.hero?.title;
+  const heroSubtitle = pageData?.hero?.subtitle;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full mx-auto">
-        <div className="mb-8">
-          <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {heroTitle}
-          </h1>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            {heroSubtitle}
-          </p>
-        </div>
+        {(heroTitle || heroSubtitle) && (
+          <div className="mb-8">
+            {heroTitle && (
+              <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                {heroTitle}
+              </h1>
+            )}
+            {heroSubtitle && (
+              <p className="mt-2 text-center text-sm text-gray-600">
+                {heroSubtitle}
+              </p>
+            )}
+          </div>
+        )}
 
         <BookingFlow
           services={services}
