@@ -23,7 +23,14 @@ export const service = defineType({
       name: 'price',
       title: 'Ár (HUF)',
       type: 'number',
+      description: 'Numerikus ár a számításokhoz',
       validation: (rule) => rule.required().min(0),
+    }),
+    defineField({
+      name: 'priceDisplay',
+      title: 'Ár megjelenítése',
+      type: 'string',
+      description: 'Szöveges ár a kártyán való megjelenítéshez (pl. "15.000 Ft", "Ingyenes", "Egyedi árajánlat")',
     }),
     defineField({
       name: 'description',
