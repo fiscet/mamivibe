@@ -38,14 +38,6 @@ const groups = [
       ['contactMessage'],
     ]
   },
-  {
-    id: 'configuration',
-    title: 'Beállítások',
-    icon: FaTags,
-    menuGroups: [
-      ['service'],
-    ]
-  }
 ];
 
 export const structure: StructureResolver = (S: StructureBuilder, context: StructureResolverContext) => {
@@ -99,7 +91,12 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
 
           S.divider(),
 
-          // Other groups (Foglalások, Visszajelzések, Beállítások)
+          // Szolgáltatások - direct list without intermediate menu
+          S.documentTypeListItem('service')
+            .title('Szolgáltatások')
+            .icon(FaTags),
+
+          // Other groups (Foglalások, Visszajelzések)
           ...groups.map((group) => {
             let displayTitle = group.title;
             if (group.id === 'feedback' && totalCount > 0) {
@@ -173,11 +170,12 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
           ...S.documentTypeListItems().filter(
             (listItem) => {
               const id = listItem.getId();
-              // Exclude singletons, grouped types, and the page type (already shown above)
+              // Exclude singletons, grouped types, service, and the page type (already shown above)
               const groupedTypes = groups.flatMap(group => group.menuGroups.flat());
               return !singletonTypes.includes(id || '') &&
                 !groupedTypes.includes(id || '') &&
-                id !== 'page';
+                id !== 'page' &&
+                id !== 'service';
             }
           ),
         ]);
