@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CookieBanner from '@/components/CookieBanner';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 
@@ -32,6 +33,7 @@ interface SiteSettingsData {
   };
   logoWidth?: number;
   logoHeight?: number;
+  googleAnalyticsId?: string;
 }
 
 async function getSiteSettings(): Promise<SiteSettingsData | null> {
@@ -42,7 +44,8 @@ async function getSiteSettings(): Promise<SiteSettingsData | null> {
       alt
     },
     logoWidth,
-    logoHeight
+    logoHeight,
+    googleAnalyticsId
   }`);
 }
 
@@ -68,6 +71,9 @@ export default async function RootLayout({
 
   return (
     <html lang="hu">
+      <head>
+        <GoogleAnalytics measurementId={siteSettings?.googleAnalyticsId} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >

@@ -47,6 +47,20 @@ export const siteSettings = defineType({
       initialValue: 50,
       validation: (Rule) => Rule.min(20).max(200),
     }),
+    defineField({
+      name: 'googleAnalyticsId',
+      title: 'Google Analytics 4 Measurement ID',
+      type: 'string',
+      description: 'A GA4 mérési azonosító (pl. "G-XXXXXXXXXX"). Hagyd üresen, ha nem használsz analitikát.',
+      validation: (Rule) =>
+        Rule.custom((value) => {
+          if (!value) return true; // Optional field
+          if (!/^G-[A-Z0-9]+$/.test(value)) {
+            return 'A Measurement ID formátuma: G-XXXXXXXXXX';
+          }
+          return true;
+        }),
+    }),
   ],
   preview: {
     select: {

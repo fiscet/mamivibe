@@ -221,6 +221,7 @@ export type SiteSettings = {
   };
   logoWidth?: number;
   logoHeight?: number;
+  googleAnalyticsId?: string;
 };
 
 export type FooterSettings = {
