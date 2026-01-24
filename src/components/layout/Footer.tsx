@@ -156,7 +156,15 @@ const Footer = async () => {
           <div>
             <h4 className="font-semibold text-gray-900 mb-6">Navigáció</h4>
             <ul className="space-y-3">
-              {NAV_ITEMS.slice(0, 3).map((item) => (
+              <li>
+                <Link
+                  href="/reviews"
+                  className="text-gray-500 hover:text-pink-500 transition-colors"
+                >
+                  Vélemények
+                </Link>
+              </li>
+              {NAV_ITEMS.filter((item) => item.href !== '/').map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}

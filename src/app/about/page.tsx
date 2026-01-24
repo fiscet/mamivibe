@@ -8,7 +8,9 @@ import {
   FaCertificate,
   FaAward,
   FaBook,
-  FaStethoscope
+  FaStethoscope,
+  FaStar,
+  FaQuoteLeft
 } from 'react-icons/fa';
 import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
@@ -91,6 +93,26 @@ async function getAboutPage() {
   }`);
 }
 
+interface Review {
+  _id: string;
+  name: string;
+  content: string;
+  rating: number;
+  reviewDate?: string;
+}
+
+async function getReviews(maxCount: number = 3): Promise<Review[]> {
+  return client.fetch(
+    groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc)[0...${maxCount}]{
+      _id,
+      name,
+      content,
+      rating,
+      reviewDate
+    }`
+  );
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getAboutPage();
 
@@ -143,6 +165,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const pageData = await getAboutPage();
+  const reviews = await getReviews(3);
 
   const hero = pageData?.hero;
   const bio = pageData?.bio;
@@ -360,6 +383,51 @@ export default async function AboutPage() {
                 {cta.secondaryButton.text}
               </Link>
             )}
+          </div>
+        </section>
+      )}
+
+      {/* Reviews Section */}
+      {reviews.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Vélemények
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {reviews.map((review) => (
+                <div
+                  key={review._id}
+                  className="relative bg-gray-50 p-8 rounded-2xl"
+                >
+                  <FaQuoteLeft className="absolute top-6 left-6 text-pink-200 text-4xl -z-0" />
+                  <div className="relative z-10">
+                    <div className="flex text-yellow-400 mb-4">
+                      {[...Array(review.rating || 5)].map((_, i) => (
+                        <FaStar key={i} />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 italic mb-6">
+                      &quot;{review.content}&quot;
+                    </p>
+                    <p className="font-bold text-gray-900">- {review.name}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <Link
+                href="/reviews"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
+              >
+                <FaStar className="text-yellow-300" />
+                Összes vélemény & Írj te is!
+              </Link>
+            </div>
           </div>
         </section>
       )}

@@ -359,6 +359,17 @@ export default async function Home() {
                 </div>
               ))}
             </div>
+
+            {/* Link to all reviews and write review */}
+            <div className="text-center mt-12">
+              <Link
+                href="/reviews"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
+              >
+                <FaStar className="text-yellow-300" />
+                Összes vélemény & Írj te is!
+              </Link>
+            </div>
           </div>
         </section>
       )}

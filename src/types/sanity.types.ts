@@ -34,23 +34,16 @@ export type Slot = {
   isFullyBooked?: boolean;
 };
 
-export type AppointmentReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "appointment";
-};
-
 export type Review = {
   _id: string;
   _type: "review";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  appointment?: AppointmentReference;
   name?: string;
-  rating?: number;
-  comment?: string;
+  rating?: 1 | 2 | 3 | 4 | 5;
+  content?: string;
+  reviewDate?: string;
   approved?: boolean;
 };
 
@@ -609,7 +602,6 @@ export type AllSanitySchemaTypes =
   | PrimaryButton
   | SecondaryButton
   | Slot
-  | AppointmentReference
   | Review
   | ContactMessage
   | ServiceReference
