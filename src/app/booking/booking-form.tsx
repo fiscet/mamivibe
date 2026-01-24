@@ -229,6 +229,39 @@ export function BookingForm({
             />
           </div>
         </div>
+
+        <div className="mb-4">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              name="privacyConsent"
+              required
+              className="mt-1 h-4 w-4 text-pink-500 focus:ring-pink-500 border-gray-300 rounded"
+            />
+            <span className="text-sm text-gray-600">
+              Elolvastam és elfogadom az{' '}
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-500 hover:text-pink-600 underline"
+              >
+                Adatvédelmi nyilatkozatot
+              </a>{' '}
+              és az{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-500 hover:text-pink-600 underline"
+              >
+                Általános Szerződési Feltételeket
+              </a>
+              . Hozzájárulok személyes adataim kezeléséhez a szolgáltatás
+              nyújtása céljából.
+            </span>
+          </label>
+        </div>
       </div>
 
       <div>

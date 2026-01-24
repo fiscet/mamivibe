@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import CookieBanner from '@/components/CookieBanner';
 import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 
@@ -73,6 +74,7 @@ export default async function RootLayout({
         <Navbar siteSettings={navbarSettings} />
         <main className="flex-grow pt-20">{children}</main>
         <Footer />
+        <CookieBanner />
       </body>
     </html>
   );

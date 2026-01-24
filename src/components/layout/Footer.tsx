@@ -221,10 +221,27 @@ const Footer = async () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-8 text-center text-gray-400 text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} {siteName}. Minden jog fenntartva.
-          </p>
+        <div className="border-t border-gray-200 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">
+              &copy; {new Date().getFullYear()} {siteName}. Minden jog
+              fenntartva.
+            </p>
+            <div className="flex gap-6 text-sm">
+              <Link
+                href="/privacy"
+                className="text-gray-400 hover:text-pink-500 transition-colors"
+              >
+                Adatvédelem
+              </Link>
+              <Link
+                href="/terms"
+                className="text-gray-400 hover:text-pink-500 transition-colors"
+              >
+                ÁSZF
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
