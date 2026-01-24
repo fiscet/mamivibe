@@ -143,12 +143,14 @@ export type Page = {
   _rev: string;
   slug?: Slug;
   title?: string;
-  subtitle?: string;
+  excerpt?: string;
+  publishedAt?: string;
   heroImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   };
   content?: Array<

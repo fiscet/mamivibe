@@ -60,12 +60,19 @@ async function getSiteSettings(): Promise<SiteSettingsData | null> {
   }`);
 }
 
+async function getBlogPostCount(): Promise<number> {
+  return client.fetch(groq`count(*[_type == "page" && defined(publishedAt)])`);
+}
+
 export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const siteSettings = await getSiteSettings();
+  const [siteSettings, blogPostCount] = await Promise.all([
+    getSiteSettings(),
+    getBlogPostCount()
+  ]);
 
   // Prepare site settings for Navbar (client component)
   const navbarSettings = siteSettings
@@ -88,7 +95,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <Navbar siteSettings={navbarSettings} />
+        <Navbar
+          siteSettings={navbarSettings}
+          hasBlogPosts={blogPostCount > 0}
+        />
         <main className="flex-grow pt-20">{children}</main>
         <Footer />
         <CookieBanner />

@@ -7,7 +7,10 @@ interface GoogleAnalyticsProps {
 export default function GoogleAnalytics({
   measurementId
 }: GoogleAnalyticsProps) {
-  if (!measurementId) {
+  // Don't load GA4 in development/local environment
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  if (!measurementId || isDevelopment) {
     return null;
   }
 

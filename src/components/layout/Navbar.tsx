@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { NAV_ITEMS, BOOKING_CTA, SITE_CONFIG } from '@/lib/config';
 
@@ -17,11 +17,35 @@ interface SiteSettingsData {
 
 interface NavbarProps {
   siteSettings?: SiteSettingsData | null;
+  hasBlogPosts?: boolean;
 }
 
-const Navbar = ({ siteSettings }: NavbarProps) => {
+interface NavItem {
+  href: string;
+  label: string;
+}
+
+const Navbar = ({ siteSettings, hasBlogPosts = false }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+
+  // Build navigation items dynamically based on blog posts availability
+  const navItems = useMemo((): NavItem[] => {
+    const items: NavItem[] = NAV_ITEMS.map((item) => ({
+      href: item.href,
+      label: item.label
+    }));
+    if (hasBlogPosts) {
+      // Insert Blog before Kapcsolat (Contact)
+      const contactIndex = items.findIndex((item) => item.href === '/contact');
+      if (contactIndex !== -1) {
+        items.splice(contactIndex, 0, { href: '/blog', label: 'Blog' });
+      } else {
+        items.push({ href: '/blog', label: 'Blog' });
+      }
+    }
+    return items;
+  }, [hasBlogPosts]);
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -61,7 +85,7 @@ const Navbar = ({ siteSettings }: NavbarProps) => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -124,7 +148,7 @@ const Navbar = ({ siteSettings }: NavbarProps) => {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-20 shadow-lg">
           <div className="px-4 pt-2 pb-6 space-y-2">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
