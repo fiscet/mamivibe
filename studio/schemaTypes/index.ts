@@ -19,14 +19,15 @@ import { siteSettings } from './singletons/siteSettings';
 import { seoFields } from './objects/seoFields';
 import { ctaBlock } from './objects/ctaBlock';
 import { valueCard } from './objects/valueCard';
-import { portableTextContent } from './objects/portableTextContent';
+import { portableTextContent, portableTextTypes } from './objects/portableTextContent';
 
 export const schemaTypes = [
   // Object types (must be registered first)
   seoFields,
   ctaBlock,
   valueCard,
-  portableTextContent,
+  // Portable text and related types (table, code, callout, divider)
+  ...portableTextTypes,
 
   // Singleton pages
   homePage,
