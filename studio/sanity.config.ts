@@ -8,9 +8,10 @@ import { schemaTypes } from './schemaTypes';
 import { structure } from './structure';
 
 // Frontend URL for Visual Editing
-// In development: http://localhost:3000
-// In production (deployed studio): https://www.mamivibe.hu
-const FRONTEND_URL = process.env.SANITY_STUDIO_PREVIEW_URL || 'https://www.mamivibe.hu';
+// IMPORTANT: This URL is used by the Presentation tool for live preview
+// For local development, the studio will still work with the production URL
+// (you just need to have the Next.js app running locally and be logged in)
+const FRONTEND_URL = 'https://www.mamivibe.hu';
 
 export default defineConfig({
   name: 'default',
