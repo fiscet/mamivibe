@@ -42,3 +42,6 @@ next-env.d.ts
 
 ai_doc/refs
 materiale
+plans
+.vscode
+.kilocode
