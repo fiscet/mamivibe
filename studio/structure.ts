@@ -1,5 +1,5 @@
 import type { StructureBuilder, StructureResolver, StructureResolverContext } from 'sanity/structure';
-import { FaCalendarCheck, FaStar, FaTags, FaFileAlt, FaHome, FaUser, FaEnvelope, FaCalendarAlt } from 'react-icons/fa';
+import { FaCalendarCheck, FaStar, FaTags, FaFileAlt, FaHome, FaUser, FaEnvelope, FaCalendarAlt, FaCog, FaColumns, FaGlobe } from 'react-icons/fa';
 import { map, combineLatest } from 'rxjs';
 import { singletonTypes } from './schemaTypes';
 
@@ -10,6 +10,12 @@ const singletonPages = [
   { type: 'servicesPage', title: 'Szolgáltatások', icon: FaTags, documentId: 'servicesPage' },
   { type: 'bookingPage', title: 'Időpontfoglalás', icon: FaCalendarAlt, documentId: 'bookingPage' },
   { type: 'contactPage', title: 'Kapcsolat', icon: FaEnvelope, documentId: 'contactPage' },
+];
+
+// Singleton settings configurations
+const singletonSettings = [
+  { type: 'siteSettings', title: 'Általános', icon: FaGlobe, documentId: 'siteSettings' },
+  { type: 'footerSettings', title: 'Lábléc', icon: FaColumns, documentId: 'footerSettings' },
 ];
 
 // Define the groups for the structure
@@ -32,14 +38,6 @@ const groups = [
       ['contactMessage'],
     ]
   },
-  {
-    id: 'configuration',
-    title: 'Beállítások',
-    icon: FaTags,
-    menuGroups: [
-      ['service'],
-    ]
-  }
 ];
 
 export const structure: StructureResolver = (S: StructureBuilder, context: StructureResolverContext) => {
@@ -93,7 +91,12 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
 
           S.divider(),
 
-          // Other groups (Foglalások, Visszajelzések, Beállítások)
+          // Szolgáltatások - direct list without intermediate menu
+          S.documentTypeListItem('service')
+            .title('Szolgáltatások')
+            .icon(FaTags),
+
+          // Other groups (Foglalások, Visszajelzések)
           ...groups.map((group) => {
             let displayTitle = group.title;
             if (group.id === 'feedback' && totalCount > 0) {
@@ -137,15 +140,42 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
             .title('Blog / Hírek')
             .icon(FaFileAlt),
 
+          S.divider(),
+
+          // Site Settings Group
+          S.listItem()
+            .title('Weboldal beállítások')
+            .id('siteSettings')
+            .icon(FaCog)
+            .child(
+              S.list()
+                .title('Weboldal beállítások')
+                .items(
+                  singletonSettings.map((setting) =>
+                    S.listItem()
+                      .title(setting.title)
+                      .id(setting.type)
+                      .icon(setting.icon)
+                      .child(
+                        S.document()
+                          .schemaType(setting.type)
+                          .documentId(setting.documentId)
+                          .title(setting.title)
+                      )
+                  )
+                )
+            ),
+
           // Filter out singleton types and already grouped types from the fallback
           ...S.documentTypeListItems().filter(
             (listItem) => {
               const id = listItem.getId();
-              // Exclude singletons, grouped types, and the page type (already shown above)
+              // Exclude singletons, grouped types, service, and the page type (already shown above)
               const groupedTypes = groups.flatMap(group => group.menuGroups.flat());
               return !singletonTypes.includes(id || '') &&
                 !groupedTypes.includes(id || '') &&
-                id !== 'page';
+                id !== 'page' &&
+                id !== 'service';
             }
           ),
         ]);

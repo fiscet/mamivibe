@@ -2,14 +2,14 @@ import { defineField, defineType } from 'sanity';
 
 export const page = defineType({
   name: 'page',
-  title: 'Oldal',
+  title: 'Blog bejegyzés',
   type: 'document',
   fields: [
     defineField({
       name: 'slug',
       title: 'URL azonosító',
       type: 'slug',
-      description: 'Az oldal egyedi azonosítója (pl. "rolam", "fooldal")',
+      description: 'Az oldal egyedi azonosítója (pl. "elso-bejegyzes")',
       options: {
         source: 'title',
         maxLength: 96,
@@ -23,18 +23,36 @@ export const page = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'subtitle',
-      title: 'Alcím',
-      type: 'string',
-      description: 'Opcionális szlogen vagy rövid leírás',
+      name: 'excerpt',
+      title: 'Rövid leírás',
+      type: 'text',
+      rows: 3,
+      description: 'Rövid összefoglaló a bejegyzésről (megjelenik a listában)',
+      validation: (rule) => rule.max(300),
+    }),
+    defineField({
+      name: 'publishedAt',
+      title: 'Publikálás dátuma',
+      type: 'datetime',
+      description: 'A bejegyzés megjelenési dátuma',
+      initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: 'heroImage',
       title: 'Főkép',
       type: 'image',
+      description: 'A bejegyzés főképe (megjelenik a listában és a bejegyzés tetején)',
       options: {
         hotspot: true,
       },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternatív szöveg',
+          description: 'Akadálymentességi leírás',
+        },
+      ],
     }),
     defineField({
       name: 'content',
@@ -168,15 +186,41 @@ export const page = defineType({
       ],
     }),
   ],
+  orderings: [
+    {
+      title: 'Publikálás dátuma (legújabb)',
+      name: 'publishedAtDesc',
+      by: [{ field: 'publishedAt', direction: 'desc' }],
+    },
+    {
+      title: 'Publikálás dátuma (legrégebbi)',
+      name: 'publishedAtAsc',
+      by: [{ field: 'publishedAt', direction: 'asc' }],
+    },
+    {
+      title: 'Cím (A-Z)',
+      name: 'titleAsc',
+      by: [{ field: 'title', direction: 'asc' }],
+    },
+  ],
   preview: {
     select: {
       title: 'title',
-      slug: 'slug.current',
+      publishedAt: 'publishedAt',
+      media: 'heroImage',
     },
-    prepare({ title, slug }) {
+    prepare({ title, publishedAt, media }) {
+      const date = publishedAt
+        ? new Date(publishedAt).toLocaleDateString('hu-HU', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+        : 'Nincs dátum';
       return {
         title: title || 'Névtelen',
-        subtitle: `/${slug || ''}`,
+        subtitle: date,
+        media,
       };
     },
   },

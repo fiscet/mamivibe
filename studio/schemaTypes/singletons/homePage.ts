@@ -76,7 +76,7 @@ export const homePage = defineType({
           name: 'availabilityNote',
           title: 'Elérhetőségi megjegyzés',
           type: 'string',
-          description: 'Kis megjegyzés a gombok alatt (pl. "✅ Elérhető online és személyesen Budapesten")',
+          description: 'Kis megjegyzés a gombok alatt (pl. "✅ Elérhető online és személyesen")',
         }),
       ],
     }),

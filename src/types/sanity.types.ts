@@ -34,23 +34,16 @@ export type Slot = {
   isFullyBooked?: boolean;
 };
 
-export type AppointmentReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "appointment";
-};
-
 export type Review = {
   _id: string;
   _type: "review";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  appointment?: AppointmentReference;
   name?: string;
-  rating?: number;
-  comment?: string;
+  rating?: 1 | 2 | 3 | 4 | 5;
+  content?: string;
+  reviewDate?: string;
   approved?: boolean;
 };
 
@@ -103,9 +96,12 @@ export type Service = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  position?: number;
   title?: string;
-  duration?: 30 | 60 | 90;
+  meetingType?: "online" | "in-person";
+  duration?: 10 | 30 | 60 | 90;
   price?: number;
+  priceDisplay?: string;
   description?: string;
   image?: {
     asset?: SanityImageAssetReference;
@@ -140,12 +136,14 @@ export type Page = {
   _rev: string;
   slug?: Slug;
   title?: string;
-  subtitle?: string;
+  excerpt?: string;
+  publishedAt?: string;
   heroImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   };
   content?: Array<
@@ -199,6 +197,44 @@ export type Slug = {
   _type: "slug";
   current?: string;
   source?: string;
+};
+
+export type SiteSettings = {
+  _id: string;
+  _type: "siteSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  siteName?: string;
+  logo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  logoWidth?: number;
+  logoHeight?: number;
+  googleAnalyticsId?: string;
+};
+
+export type FooterSettings = {
+  _id: string;
+  _type: "footerSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  description?: string;
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+    twitter?: string;
+    pinterest?: string;
+  };
 };
 
 export type ContactPage = {
@@ -566,7 +602,6 @@ export type AllSanitySchemaTypes =
   | PrimaryButton
   | SecondaryButton
   | Slot
-  | AppointmentReference
   | Review
   | ContactMessage
   | ServiceReference
@@ -577,6 +612,8 @@ export type AllSanitySchemaTypes =
   | SanityImageHotspot
   | Page
   | Slug
+  | SiteSettings
+  | FooterSettings
   | ContactPage
   | SeoFields
   | BookingPage

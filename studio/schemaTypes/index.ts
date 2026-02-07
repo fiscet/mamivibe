@@ -12,6 +12,8 @@ import { aboutPage } from './singletons/aboutPage';
 import { servicesPage } from './singletons/servicesPage';
 import { bookingPage } from './singletons/bookingPage';
 import { contactPage } from './singletons/contactPage';
+import { footerSettings } from './singletons/footerSettings';
+import { siteSettings } from './singletons/siteSettings';
 
 // Reusable object types
 import { seoFields } from './objects/seoFields';
@@ -33,6 +35,10 @@ export const schemaTypes = [
   bookingPage,
   contactPage,
 
+  // Singleton settings
+  footerSettings,
+  siteSettings,
+
   // Collection document types
   page, // Keep for blog/news if needed
   service,
@@ -43,4 +49,4 @@ export const schemaTypes = [
 ];
 
 // Export singleton document IDs for use in structure
-export const singletonTypes = ['homePage', 'aboutPage', 'servicesPage', 'bookingPage', 'contactPage'];
+export const singletonTypes = ['homePage', 'aboutPage', 'servicesPage', 'bookingPage', 'contactPage', 'footerSettings', 'siteSettings'];

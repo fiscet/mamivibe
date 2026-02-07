@@ -12,11 +12,10 @@ import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
+import { SITE_CONFIG } from '@/lib/config';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mamivibe.hu';
 
 // Icon mapping for dynamic icon rendering
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -119,7 +118,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords: keywords.join(', '),
     alternates: {
-      canonical: pageData?.seo?.canonicalUrl || `${BASE_URL}`
+      canonical: pageData?.seo?.canonicalUrl || SITE_CONFIG.baseUrl
     },
     robots: pageData?.seo?.noIndex
       ? { index: false, follow: false }
@@ -127,9 +126,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: `${BASE_URL}`,
-      siteName: 'Mamivibe',
-      locale: 'hu_HU',
+      url: SITE_CONFIG.baseUrl,
+      siteName: SITE_CONFIG.name,
+      locale: SITE_CONFIG.locale,
       type: 'website',
       ...(ogImage && {
         images: [
@@ -200,7 +199,7 @@ export default async function Home() {
                   {hero.primaryCTA?.text && (
                     <Link
                       href={hero.primaryCTA.link || '/booking'}
-                      className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
+                      className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white text-center font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
                     >
                       {hero.primaryCTA.text}
                     </Link>
@@ -208,7 +207,7 @@ export default async function Home() {
                   {hero.secondaryCTA?.text && (
                     <Link
                       href={hero.secondaryCTA.link || '/services'}
-                      className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-pink-500 text-pink-600 rounded-full font-bold hover:bg-pink-50 transition-colors"
+                      className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-pink-500 text-pink-600 rounded-full text-center font-bold hover:bg-pink-50 transition-colors"
                     >
                       {hero.secondaryCTA.text}
                     </Link>
@@ -359,6 +358,17 @@ export default async function Home() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Link to all reviews and write review */}
+            <div className="text-center mt-12">
+              <Link
+                href="/reviews"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold text-lg shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40 hover:-translate-y-1 transition-all"
+              >
+                <FaStar className="text-yellow-300" />
+                Összes vélemény & Írj te is!
+              </Link>
             </div>
           </div>
         </section>

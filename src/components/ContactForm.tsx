@@ -9,7 +9,10 @@ const initialState = {
 };
 
 export default function ContactForm() {
-  const [state, formAction, isPending] = useActionState(sendContactMessage, initialState);
+  const [state, formAction, isPending] = useActionState(
+    sendContactMessage,
+    initialState
+  );
 
   if (state?.success) {
     return (
@@ -29,7 +32,12 @@ export default function ContactForm() {
   return (
     <form action={formAction} className="space-y-6">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Név</label>
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Név
+        </label>
         <input
           type="text"
           id="name"
@@ -41,7 +49,12 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email cím</label>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Email cím
+        </label>
         <input
           type="email"
           id="email"
@@ -53,7 +66,12 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Üzenet</label>
+        <label
+          htmlFor="message"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Üzenet
+        </label>
         <textarea
           id="message"
           name="message"
@@ -62,6 +80,30 @@ export default function ContactForm() {
           className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all resize-none"
           placeholder="Miben segíthetek?"
         ></textarea>
+      </div>
+
+      <div>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            name="privacyConsent"
+            required
+            className="mt-1 h-4 w-4 text-pink-500 focus:ring-pink-500 border-gray-300 rounded"
+          />
+          <span className="text-sm text-gray-600">
+            Elolvastam és elfogadom az{' '}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-500 hover:text-pink-600 underline"
+            >
+              Adatvédelmi nyilatkozatot
+            </a>
+            . Hozzájárulok személyes adataim kezeléséhez a kapcsolatfelvétel
+            céljából.
+          </span>
+        </label>
       </div>
 
       <button
