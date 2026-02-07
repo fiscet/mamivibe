@@ -1,4 +1,4 @@
-import { client, urlFor } from '@/lib/sanity.client';
+import { sanityFetch, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -23,17 +23,20 @@ interface BlogPost {
 }
 
 async function getBlogPosts(): Promise<BlogPost[]> {
-  return client.fetch(groq`*[_type == "page" && defined(publishedAt)] | order(publishedAt desc) {
-    _id,
-    title,
-    slug,
-    excerpt,
-    publishedAt,
-    heroImage {
-      asset,
-      alt
-    }
-  }`);
+  return sanityFetch<BlogPost[]>({
+    query: groq`*[_type == "page" && defined(publishedAt)] | order(publishedAt desc) {
+      _id,
+      title,
+      slug,
+      excerpt,
+      publishedAt,
+      heroImage {
+        asset,
+        alt
+      }
+    }`,
+    tags: ['blog']
+  });
 }
 
 export async function generateMetadata(): Promise<Metadata> {

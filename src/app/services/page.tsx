@@ -1,4 +1,4 @@
-import { client, urlFor } from '@/lib/sanity.client';
+import { sanityFetch, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -23,40 +23,64 @@ interface Service {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface ServicesPageData {
+  hero?: {
+    title?: string;
+    subtitle?: string;
+    badge?: string;
+  };
+  emptyStateMessage?: string;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+    ogImage?: { asset?: any; alt?: string };
+    canonicalUrl?: string;
+    noIndex?: boolean;
+  };
+}
+
 async function getServicesPageData() {
-  return client.fetch(groq`*[_type == "servicesPage" && _id == "servicesPage"][0]{
-    hero {
-      title,
-      subtitle,
-      badge
-    },
-    emptyStateMessage,
-    seo {
-      metaTitle,
-      metaDescription,
-      keywords,
-      ogImage {
-        asset,
-        alt
+  return sanityFetch<ServicesPageData>({
+    query: groq`*[_type == "servicesPage" && _id == "servicesPage"][0]{
+      hero {
+        title,
+        subtitle,
+        badge
       },
-      canonicalUrl,
-      noIndex
-    }
-  }`);
+      emptyStateMessage,
+      seo {
+        metaTitle,
+        metaDescription,
+        keywords,
+        ogImage {
+          asset,
+          alt
+        },
+        canonicalUrl,
+        noIndex
+      }
+    }`,
+    tags: ['servicesPage']
+  });
 }
 
 async function getServices(): Promise<Service[]> {
-  return client.fetch(groq`*[_type == "service"] | order(position asc){
-    _id,
-    title,
-    meetingType,
-    duration,
-    price,
-    priceDisplay,
-    description,
-    position,
-    image
-  }`);
+  return sanityFetch<Service[]>({
+    query: groq`*[_type == "service"] | order(position asc){
+      _id,
+      title,
+      meetingType,
+      duration,
+      price,
+      priceDisplay,
+      description,
+      position,
+      image
+    }`,
+    tags: ['services']
+  });
 }
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
-import { client } from '@/lib/sanity.client';
+import { sanityFetch } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { ReviewForm } from '@/components/ReviewForm';
 import { SITE_CONFIG } from '@/lib/config';
@@ -16,24 +16,26 @@ interface Review {
 }
 
 async function getApprovedReviews(): Promise<Review[]> {
-  return client.fetch(
-    groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc){
+  return sanityFetch<Review[]>({
+    query: groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc){
       _id,
       name,
       content,
       rating,
       reviewDate
-    }`
-  );
+    }`,
+    tags: ['reviews']
+  });
 }
 
 async function getAverageRating(): Promise<{ average: number; count: number }> {
-  const result = await client.fetch(
-    groq`{
+  const result = await sanityFetch<{ count: number; total: number }>({
+    query: groq`{
       "count": count(*[_type == "review" && approved == true]),
       "total": math::sum(*[_type == "review" && approved == true].rating)
-    }`
-  );
+    }`,
+    tags: ['reviews']
+  });
   return {
     count: result.count || 0,
     average: result.count > 0 ? result.total / result.count : 0

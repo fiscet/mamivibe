@@ -12,7 +12,7 @@ import {
   FaStar,
   FaQuoteLeft
 } from 'react-icons/fa';
-import { client, urlFor } from '@/lib/sanity.client';
+import { sanityFetch, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
@@ -38,59 +38,62 @@ const iconMap: Record<
 };
 
 async function getAboutPage() {
-  return client.fetch(groq`*[_type == "aboutPage" && _id == "aboutPage"][0]{
-    hero {
-      title,
-      subtitle
-    },
-    bio {
-      profileImage,
-      experienceBadge {
-        number,
-        label
+  return sanityFetch<AboutPage>({
+    query: groq`*[_type == "aboutPage" && _id == "aboutPage"][0]{
+      hero {
+        title,
+        subtitle
       },
-      name,
-      content
-    },
-    credentials[] {
-      icon,
-      iconColor,
-      title,
-      description
-    },
-    values {
-      sectionTitle,
-      items[] {
+      bio {
+        profileImage,
+        experienceBadge {
+          number,
+          label
+        },
+        name,
+        content
+      },
+      credentials[] {
         icon,
+        iconColor,
         title,
         description
+      },
+      values {
+        sectionTitle,
+        items[] {
+          icon,
+          title,
+          description
+        }
+      },
+      cta {
+        heading,
+        description,
+        primaryButton {
+          text,
+          link
+        },
+        secondaryButton {
+          text,
+          link
+        },
+        style
+      },
+      seo {
+        metaTitle,
+        metaDescription,
+        keywords,
+        ogImage {
+          asset,
+          alt
+        },
+        canonicalUrl,
+        noIndex
       }
-    },
-    cta {
-      heading,
-      description,
-      primaryButton {
-        text,
-        link
-      },
-      secondaryButton {
-        text,
-        link
-      },
-      style
-    },
-    seo {
-      metaTitle,
-      metaDescription,
-      keywords,
-      ogImage {
-        asset,
-        alt
-      },
-      canonicalUrl,
-      noIndex
-    }
-  }`);
+    }`,
+    tags: ['aboutPage']
+  });
 }
 
 interface Review {
@@ -102,15 +105,16 @@ interface Review {
 }
 
 async function getReviews(maxCount: number = 3): Promise<Review[]> {
-  return client.fetch(
-    groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc)[0...${maxCount}]{
+  return sanityFetch<Review[]>({
+    query: groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc)[0...${maxCount}]{
       _id,
       name,
       content,
       rating,
       reviewDate
-    }`
-  );
+    }`,
+    tags: ['reviews']
+  });
 }
 
 export async function generateMetadata(): Promise<Metadata> {
