@@ -8,7 +8,7 @@ import {
   FaQuoteLeft,
   FaHeart
 } from 'react-icons/fa';
-import { client, urlFor } from '@/lib/sanity.client';
+import { sanityFetch, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
@@ -39,65 +39,111 @@ interface Review {
   rating: number;
 }
 
-async function getHomePage() {
-  return client.fetch(groq`*[_type == "homePage" && _id == "homePage"][0]{
-    hero {
-      badge,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface HomePageData {
+  hero?: {
+    badge?: string;
+    title?: string;
+    highlightedText?: string;
+    subtitle?: string;
+    heroImage?: any;
+    primaryCTA?: { text?: string; link?: string };
+    secondaryCTA?: { text?: string; link?: string };
+    availabilityNote?: string;
+  };
+  intro?: {
+    heading?: string;
+    content?: any;
+    linkText?: string;
+    linkUrl?: string;
+  };
+  servicesOverview?: {
+    sectionTitle?: string;
+    sectionSubtitle?: string;
+    serviceCards?: ServiceCard[];
+  };
+  testimonials?: {
+    sectionTitle?: string;
+    showTestimonials?: boolean;
+    maxCount?: number;
+  };
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+    ogImage?: { asset?: any; alt?: string };
+    canonicalUrl?: string;
+    noIndex?: boolean;
+  };
+}
+
+const homePageQuery = groq`*[_type == "homePage" && _id == "homePage"][0]{
+  hero {
+    badge,
+    title,
+    highlightedText,
+    subtitle,
+    heroImage,
+    primaryCTA {
+      text,
+      link
+    },
+    secondaryCTA {
+      text,
+      link
+    },
+    availabilityNote
+  },
+  intro {
+    heading,
+    content,
+    linkText,
+    linkUrl
+  },
+  servicesOverview {
+    sectionTitle,
+    sectionSubtitle,
+    serviceCards[] {
+      icon,
       title,
-      highlightedText,
-      subtitle,
-      heroImage,
-      primaryCTA {
-        text,
-        link
-      },
-      secondaryCTA {
-        text,
-        link
-      },
-      availabilityNote
-    },
-    intro {
-      heading,
-      content,
-      linkText,
-      linkUrl
-    },
-    servicesOverview {
-      sectionTitle,
-      sectionSubtitle,
-      serviceCards[] {
-        icon,
-        title,
-        description,
-        link
-      }
-    },
-    testimonials {
-      sectionTitle,
-      showTestimonials,
-      maxCount
-    },
-    seo {
-      metaTitle,
-      metaDescription,
-      keywords,
-      ogImage {
-        asset,
-        alt
-      },
-      canonicalUrl,
-      noIndex
+      description,
+      link
     }
-  }`);
+  },
+  testimonials {
+    sectionTitle,
+    showTestimonials,
+    maxCount
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    keywords,
+    ogImage {
+      asset,
+      alt
+    },
+    canonicalUrl,
+    noIndex
+  }
+}`;
+
+async function getHomePage() {
+  return sanityFetch<HomePageData>({
+    query: homePageQuery,
+    tags: ['homePage']
+  });
 }
 
 async function getReviews(maxCount: number = 3) {
-  return client.fetch(groq`*[_type == "review" && approved == true] | order(_createdAt desc)[0...${maxCount}]{
-    name,
-    content,
-    rating
-  }`);
+  return sanityFetch<Review[]>({
+    query: groq`*[_type == "review" && approved == true] | order(_createdAt desc)[0...${maxCount}]{
+      name,
+      content,
+      rating
+    }`,
+    tags: ['reviews']
+  });
 }
 
 export async function generateMetadata(): Promise<Metadata> {

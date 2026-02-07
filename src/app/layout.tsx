@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { draftMode } from 'next/headers';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CookieBanner from '@/components/CookieBanner';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
-import { client, urlFor } from '@/lib/sanity.client';
+import { VisualEditing } from '@/components/VisualEditing';
+import { sanityFetch, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 
 const geistSans = Geist({
@@ -48,20 +50,26 @@ interface SiteSettingsData {
 }
 
 async function getSiteSettings(): Promise<SiteSettingsData | null> {
-  return client.fetch(groq`*[_type == "siteSettings" && _id == "siteSettings"][0]{
-    siteName,
-    logo {
-      asset,
-      alt
-    },
-    logoWidth,
-    logoHeight,
-    googleAnalyticsId
-  }`);
+  return sanityFetch<SiteSettingsData | null>({
+    query: groq`*[_type == "siteSettings" && _id == "siteSettings"][0]{
+      siteName,
+      logo {
+        asset,
+        alt
+      },
+      logoWidth,
+      logoHeight,
+      googleAnalyticsId
+    }`,
+    tags: ['siteSettings']
+  });
 }
 
 async function getBlogPostCount(): Promise<number> {
-  return client.fetch(groq`count(*[_type == "page" && defined(publishedAt)])`);
+  return sanityFetch<number>({
+    query: groq`count(*[_type == "page" && defined(publishedAt)])`,
+    tags: ['blog']
+  });
 }
 
 export default async function RootLayout({
@@ -69,6 +77,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { isEnabled: isDraftMode } = await draftMode();
+
   const [siteSettings, blogPostCount] = await Promise.all([
     getSiteSettings(),
     getBlogPostCount()
@@ -102,6 +112,7 @@ export default async function RootLayout({
         <main className="flex-grow pt-20">{children}</main>
         <Footer />
         <CookieBanner />
+        {isDraftMode && <VisualEditing />}
       </body>
     </html>
   );

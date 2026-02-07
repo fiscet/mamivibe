@@ -1,4 +1,4 @@
-import { client, urlFor } from '@/lib/sanity.client';
+import { sanityFetch, urlFor, client } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -44,8 +44,8 @@ interface PageProps {
 }
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  return client.fetch(
-    groq`*[_type == "page" && slug.current == $slug][0]{
+  return sanityFetch<BlogPost | null>({
+    query: groq`*[_type == "page" && slug.current == $slug][0]{
       _id,
       title,
       slug,
@@ -68,10 +68,12 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
         noIndex
       }
     }`,
-    { slug }
-  );
+    params: { slug },
+    tags: ['blog', `blog-${slug}`]
+  });
 }
 
+// Use regular client for static params generation (build time)
 async function getAllBlogSlugs(): Promise<{ slug: string }[]> {
   const posts = await client.fetch(
     groq`*[_type == "page" && defined(slug.current)]{
