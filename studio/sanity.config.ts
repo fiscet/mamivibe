@@ -4,7 +4,7 @@ import { presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { media } from 'sanity-plugin-media';
 import { huHULocale } from '@sanity/locale-hu-hu';
-import { schemaTypes } from './schemaTypes';
+import { schemaTypes, singletonTypes } from './schemaTypes';
 import { structure } from './structure';
 
 // Frontend URL for Visual Editing
@@ -38,5 +38,30 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    // For singleton types, filter out actions that don't make sense
+    // (e.g., "duplicate", "delete", "unpublish" for singletons)
+    // This ensures the Publish action works correctly
+    actions: (input, context) => {
+      if (singletonTypes.includes(context.schemaType)) {
+        // For singletons: keep only publish, discardChanges, and restore
+        return input.filter(
+          ({ action }) =>
+            action && ['publish', 'discardChanges', 'restore'].includes(action)
+        );
+      }
+      return input;
+    },
+    // Prevent creating new documents for singleton types via the "New document" menu
+    newDocumentOptions: (prev, { creationContext }) => {
+      if (creationContext.type === 'global') {
+        return prev.filter(
+          (templateItem) => !singletonTypes.includes(templateItem.templateId)
+        );
+      }
+      return prev;
+    },
   },
 });
