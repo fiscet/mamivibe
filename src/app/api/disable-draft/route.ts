@@ -1,19 +1,9 @@
 import { draftMode } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-  const redirectTo = searchParams.get('redirect') || '/';
-
-  // Disable draft mode
+export async function GET(request: NextRequest) {
   const draft = await draftMode();
   draft.disable();
 
-  // Build the redirect URL
-  const redirectUrl = new URL(redirectTo, origin);
-
-  // Return a redirect response with the cookie cleared
-  return NextResponse.redirect(redirectUrl, {
-    status: 307,
-  });
+  return new NextResponse('Draft mode is disabled');
 }
