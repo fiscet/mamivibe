@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { draftMode } from 'next/headers';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -76,6 +77,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { isEnabled: isDraftMode } = await draftMode();
   const [siteSettings, blogPostCount] = await Promise.all([
     getSiteSettings(),
     getBlogPostCount()
@@ -105,6 +107,7 @@ export default async function RootLayout({
         <Navbar
           siteSettings={navbarSettings}
           hasBlogPosts={blogPostCount > 0}
+          isDraftMode={isDraftMode}
         />
         <main className="flex-grow pt-20">{children}</main>
         <Footer />
