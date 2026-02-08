@@ -18,6 +18,7 @@ interface SiteSettingsData {
 interface NavbarProps {
   siteSettings?: SiteSettingsData | null;
   hasBlogPosts?: boolean;
+  isDraftMode?: boolean;
 }
 
 interface NavItem {
@@ -25,7 +26,11 @@ interface NavItem {
   label: string;
 }
 
-const Navbar = ({ siteSettings, hasBlogPosts = false }: NavbarProps) => {
+const Navbar = ({
+  siteSettings,
+  hasBlogPosts = false,
+  isDraftMode = false
+}: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -99,6 +104,14 @@ const Navbar = ({ siteSettings, hasBlogPosts = false }: NavbarProps) => {
                 {item.label}
               </Link>
             ))}
+            {isDraftMode && (
+              <Link
+                href="/api/disable-draft"
+                className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors"
+              >
+                Disable Preview
+              </Link>
+            )}
             <Link
               href={BOOKING_CTA.href}
               className={cn(
@@ -163,6 +176,15 @@ const Navbar = ({ siteSettings, hasBlogPosts = false }: NavbarProps) => {
                 {item.label}
               </Link>
             ))}
+            {isDraftMode && (
+              <Link
+                href="/api/disable-draft"
+                onClick={() => setIsOpen(false)}
+                className="block w-full text-center px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors"
+              >
+                Disable Preview
+              </Link>
+            )}
             <div className="pt-4">
               <Link
                 href={BOOKING_CTA.href}
