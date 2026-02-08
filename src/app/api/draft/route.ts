@@ -1,16 +1,7 @@
-import { draftMode } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { defineEnableDraftMode } from 'next-sanity/draft-mode';
+import { client } from '@/lib/sanity.client';
+import { token } from '@/lib/sanity.config';
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-
-  // Get the path to redirect to (from Sanity Presentation Tool)
-  const redirectTo = searchParams.get('sanity-preview-pathname') || '/';
-
-  // Enable draft mode
-  const draft = await draftMode();
-  draft.enable();
-
-  // Redirect to the page being previewed
-  redirect(`${origin}${redirectTo}`);
-}
+export const { GET } = defineEnableDraftMode({
+  client: client.withConfig({ token }),
+});
