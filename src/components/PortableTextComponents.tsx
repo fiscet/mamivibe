@@ -1,5 +1,6 @@
 import { PortableTextComponents } from '@portabletext/react';
 import { urlFor } from '@/lib/sanity.client';
+import { stegaClean } from 'next-sanity';
 
 // Helper function to get image size classes
 const getImageSizeClasses = (size: string | undefined): string => {
@@ -288,11 +289,20 @@ export const portableTextComponents: PortableTextComponents = {
     image: ({ value }: { value: ImageValue }) => {
       if (!value?.asset) return null;
 
-      const sizeClasses = getImageSizeClasses(value.size);
-      const borderRadiusClasses = getBorderRadiusClasses(value.borderRadius);
+      // Clean stega encoding from all string values to ensure CSS classes match correctly
+      const cleanSize = stegaClean(value.size);
+      const cleanAlignment = stegaClean(value.alignment);
+      const cleanFloat = stegaClean(value.float);
+      const cleanBorderRadius = stegaClean(value.borderRadius);
+      const cleanAlt = stegaClean(value.alt) || '';
+      const cleanCaption = stegaClean(value.caption);
+      const cleanLink = stegaClean(value.link);
+      const cleanCustomClass = stegaClean(value.customClass) || '';
+
+      const sizeClasses = getImageSizeClasses(cleanSize);
+      const borderRadiusClasses = getBorderRadiusClasses(cleanBorderRadius);
       const shadowClass = value.shadow ? 'shadow-lg' : '';
       const borderClass = value.border ? 'border-2 border-gray-200' : '';
-      const customClass = value.customClass || '';
 
       // Image-specific classes (visual styling)
       const imageClasses = [
@@ -301,15 +311,15 @@ export const portableTextComponents: PortableTextComponents = {
         borderRadiusClasses,
         shadowClass,
         borderClass,
-        customClass
+        cleanCustomClass
       ]
         .filter(Boolean)
         .join(' ');
 
       // Figure classes for layout (size, alignment, float)
       const alignmentClasses = getImageAlignmentClasses(
-        value.alignment,
-        value.float
+        cleanAlignment,
+        cleanFloat
       );
       const figureClasses = [sizeClasses, alignmentClasses]
         .filter(Boolean)
@@ -318,14 +328,14 @@ export const portableTextComponents: PortableTextComponents = {
       const imageElement = (
         <img
           src={urlFor(value).width(1200).url()}
-          alt={value.alt || ''}
+          alt={cleanAlt}
           className={imageClasses}
         />
       );
 
-      const wrappedImage = value.link ? (
+      const wrappedImage = cleanLink ? (
         <a
-          href={value.link}
+          href={cleanLink}
           target="_blank"
           rel="noopener noreferrer"
           className="block"
@@ -337,19 +347,19 @@ export const portableTextComponents: PortableTextComponents = {
       );
 
       // Clear float after image if floating
-      const clearFloat = value.float && value.float !== 'none';
+      const clearFloat = cleanFloat && cleanFloat !== 'none';
 
       return (
         <>
           <figure
             className={`my-8 ${figureClasses} ${
-              value.float === 'none' || !value.float ? 'clear-both' : ''
+              cleanFloat === 'none' || !cleanFloat ? 'clear-both' : ''
             }`}
           >
             {wrappedImage}
-            {value.caption && (
+            {cleanCaption && (
               <figcaption className="text-center text-sm text-gray-500 mt-3">
-                {value.caption}
+                {cleanCaption}
               </figcaption>
             )}
           </figure>
