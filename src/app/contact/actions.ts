@@ -2,7 +2,7 @@
 
 import { client as sanityClient } from "@/lib/sanity.client";
 
-export async function sendContactMessage(prevState: any, formData: FormData) {
+export async function sendContactMessage(prevState: unknown, formData: FormData) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const message = formData.get('message') as string;
