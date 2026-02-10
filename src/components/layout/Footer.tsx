@@ -14,41 +14,12 @@ import {
 import { SITE_CONFIG, NAV_ITEMS } from '@/lib/config';
 import { client, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
-
-interface SocialLinks {
-  facebook?: string;
-  instagram?: string;
-  linkedin?: string;
-  youtube?: string;
-  tiktok?: string;
-  twitter?: string;
-  pinterest?: string;
-}
-
-interface FooterData {
-  description?: string;
-  socialLinks?: SocialLinks;
-}
-
-interface ContactData {
-  contactInfo?: {
-    phone?: {
-      number?: string;
-    };
-  };
-}
-
-interface SiteSettingsData {
-  siteName?: string;
-  logo?: {
-    asset?: {
-      _ref: string;
-    };
-    alt?: string;
-  };
-  logoWidth?: number;
-  logoHeight?: number;
-}
+import type {
+  SocialLinks,
+  FooterData,
+  ContactData,
+  SiteSettingsData
+} from '@/types/custom.types';
 
 async function getFooterData(): Promise<FooterData | null> {
   return client.fetch(groq`*[_type == "footerSettings" && _id == "footerSettings"][0]{

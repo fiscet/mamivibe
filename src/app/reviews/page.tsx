@@ -1,46 +1,10 @@
 import { Metadata } from 'next';
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
-import { sanityFetch } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
 import { ReviewForm } from '@/components/ReviewForm';
 import { SITE_CONFIG } from '@/lib/config';
+import { getApprovedReviews, getAverageRating } from '@/lib/queries/reviews';
 
 export const revalidate = 60;
-
-interface Review {
-  _id: string;
-  name: string;
-  content: string;
-  rating: number;
-  reviewDate?: string;
-}
-
-async function getApprovedReviews(): Promise<Review[]> {
-  return sanityFetch<Review[]>({
-    query: groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc){
-      _id,
-      name,
-      content,
-      rating,
-      reviewDate
-    }`,
-    tags: ['reviews']
-  });
-}
-
-async function getAverageRating(): Promise<{ average: number; count: number }> {
-  const result = await sanityFetch<{ count: number; total: number }>({
-    query: groq`{
-      "count": count(*[_type == "review" && approved == true]),
-      "total": math::sum(*[_type == "review" && approved == true].rating)
-    }`,
-    tags: ['reviews']
-  });
-  return {
-    count: result.count || 0,
-    average: result.count > 0 ? result.total / result.count : 0
-  };
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const { average, count } = await getAverageRating();
@@ -130,7 +94,7 @@ export default async function ReviewsPage() {
                           <FaStar
                             key={i}
                             className={
-                              i < review.rating
+                              i < (review.rating || 0)
                                 ? 'text-yellow-400'
                                 : 'text-gray-200'
                             }

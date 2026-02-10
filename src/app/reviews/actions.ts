@@ -1,11 +1,7 @@
 'use server';
 
 import { client as sanityClient } from '@/lib/sanity.client';
-
-export interface ReviewFormState {
-  success: boolean;
-  message: string;
-}
+import type { ReviewFormState } from '@/types/custom.types';
 
 export async function submitReview(
   prevState: ReviewFormState,

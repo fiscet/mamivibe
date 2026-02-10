@@ -9,6 +9,7 @@ import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { VisualEditing } from '@/components/VisualEditing';
 import { sanityFetch, urlFor } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
+import type { SiteSettingsData } from '@/types/custom.types';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -35,19 +36,6 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest'
 };
-
-interface SiteSettingsData {
-  siteName?: string;
-  logo?: {
-    asset?: {
-      _ref: string;
-    };
-    alt?: string;
-  };
-  logoWidth?: number;
-  logoHeight?: number;
-  googleAnalyticsId?: string;
-}
 
 async function getSiteSettings(): Promise<SiteSettingsData | null> {
   return sanityFetch<SiteSettingsData | null>({

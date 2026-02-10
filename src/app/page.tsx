@@ -6,13 +6,29 @@ import {
   FaHandsHelping,
   FaStar,
   FaQuoteLeft,
-  FaHeart
+  FaHeart,
+  FaGraduationCap,
+  FaShieldAlt,
+  FaUsers,
+  FaLightbulb,
+  FaCheckCircle,
+  FaStethoscope,
+  FaBook,
+  FaChalkboardTeacher,
+  FaClock,
+  FaVideo,
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaBox,
+  FaAward
 } from 'react-icons/fa';
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
 import { SITE_CONFIG } from '@/lib/config';
+import type { ServiceCard, Review } from '@/types/custom.types';
+import { getHomePage, getReviews } from '@/lib/queries/home';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
@@ -23,128 +39,23 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   FaBaby,
   FaCalendarCheck,
   FaHeart,
-  FaStar
+  FaStar,
+  FaGraduationCap,
+  FaShieldAlt,
+  FaUsers,
+  FaLightbulb,
+  FaCheckCircle,
+  FaStethoscope,
+  FaBook,
+  FaChalkboardTeacher,
+  FaClock,
+  FaVideo,
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaBox,
+  FaAward
 };
-
-interface ServiceCard {
-  icon: string;
-  title: string;
-  description: string;
-  link: string;
-}
-
-interface Review {
-  name: string;
-  content: string;
-  rating: number;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface HomePageData {
-  hero?: {
-    badge?: string;
-    title?: string;
-    highlightedText?: string;
-    subtitle?: string;
-    heroImage?: any;
-    primaryCTA?: { text?: string; link?: string };
-    secondaryCTA?: { text?: string; link?: string };
-    availabilityNote?: string;
-  };
-  intro?: {
-    heading?: string;
-    content?: any;
-    linkText?: string;
-    linkUrl?: string;
-  };
-  servicesOverview?: {
-    sectionTitle?: string;
-    sectionSubtitle?: string;
-    serviceCards?: ServiceCard[];
-  };
-  testimonials?: {
-    sectionTitle?: string;
-    showTestimonials?: boolean;
-    maxCount?: number;
-  };
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    ogImage?: { asset?: any; alt?: string };
-    canonicalUrl?: string;
-    noIndex?: boolean;
-  };
-}
-
-const homePageQuery = groq`*[_type == "homePage" && _id == "homePage"][0]{
-  hero {
-    badge,
-    title,
-    highlightedText,
-    subtitle,
-    heroImage,
-    primaryCTA {
-      text,
-      link
-    },
-    secondaryCTA {
-      text,
-      link
-    },
-    availabilityNote
-  },
-  intro {
-    heading,
-    content,
-    linkText,
-    linkUrl
-  },
-  servicesOverview {
-    sectionTitle,
-    sectionSubtitle,
-    serviceCards[] {
-      icon,
-      title,
-      description,
-      link
-    }
-  },
-  testimonials {
-    sectionTitle,
-    showTestimonials,
-    maxCount
-  },
-  seo {
-    metaTitle,
-    metaDescription,
-    keywords,
-    ogImage {
-      asset,
-      alt
-    },
-    canonicalUrl,
-    noIndex
-  }
-}`;
-
-async function getHomePage() {
-  return sanityFetch<HomePageData>({
-    query: homePageQuery,
-    tags: ['homePage']
-  });
-}
-
-async function getReviews(maxCount: number = 3) {
-  return sanityFetch<Review[]>({
-    query: groq`*[_type == "review" && approved == true] | order(_createdAt desc)[0...${maxCount}]{
-      name,
-      content,
-      rating
-    }`,
-    tags: ['reviews']
-  });
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getHomePage();
@@ -344,7 +255,8 @@ export default async function Home() {
 
             <div className="grid md:grid-cols-3 gap-8">
               {serviceCards.map((service, idx) => {
-                const IconComponent = iconMap[service.icon] || FaHandsHelping;
+                const IconComponent =
+                  iconMap[service.icon || 'FaHandsHelping'] || FaHandsHelping;
                 return (
                   <div
                     key={idx}

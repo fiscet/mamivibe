@@ -1,87 +1,11 @@
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { SITE_CONFIG } from '@/lib/config';
+import { getServicesPageData, getServices } from '@/lib/queries/services';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-interface Service {
-  _id: string;
-  title: string;
-  meetingType: 'online' | 'in-person';
-  duration: number;
-  price: number;
-  priceDisplay?: string;
-  description: string;
-  position: number;
-  image?: {
-    asset: {
-      _ref: string;
-    };
-  };
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ServicesPageData {
-  hero?: {
-    title?: string;
-    subtitle?: string;
-    badge?: string;
-  };
-  emptyStateMessage?: string;
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    ogImage?: { asset?: any; alt?: string };
-    canonicalUrl?: string;
-    noIndex?: boolean;
-  };
-}
-
-async function getServicesPageData() {
-  return sanityFetch<ServicesPageData>({
-    query: groq`*[_type == "servicesPage" && _id == "servicesPage"][0]{
-      hero {
-        title,
-        subtitle,
-        badge
-      },
-      emptyStateMessage,
-      seo {
-        metaTitle,
-        metaDescription,
-        keywords,
-        ogImage {
-          asset,
-          alt
-        },
-        canonicalUrl,
-        noIndex
-      }
-    }`,
-    tags: ['servicesPage']
-  });
-}
-
-async function getServices(): Promise<Service[]> {
-  return sanityFetch<Service[]>({
-    query: groq`*[_type == "service"] | order(position asc){
-      _id,
-      title,
-      meetingType,
-      duration,
-      price,
-      priceDisplay,
-      description,
-      position,
-      image
-    }`,
-    tags: ['services']
-  });
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getServicesPageData();
@@ -206,7 +130,9 @@ export default async function ServicesPage() {
                         {(service.priceDisplay || service.price) && (
                           <span className="font-medium text-pink-600">
                             {service.priceDisplay ||
-                              `${service.price.toLocaleString('hu-HU')} Ft`}
+                              `${(service.price || 0).toLocaleString(
+                                'hu-HU'
+                              )} Ft`}
                           </span>
                         )}
                       </td>
@@ -244,7 +170,7 @@ export default async function ServicesPage() {
                     {(service.priceDisplay || service.price) && (
                       <span className="font-medium text-pink-600">
                         {service.priceDisplay ||
-                          `${service.price.toLocaleString('hu-HU')} Ft`}
+                          `${(service.price || 0).toLocaleString('hu-HU')} Ft`}
                       </span>
                     )}
                   </div>
