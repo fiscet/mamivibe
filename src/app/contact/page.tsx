@@ -1,91 +1,12 @@
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { Metadata } from 'next';
 import { FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 import ContactForm from '@/components/ContactForm';
 import { SITE_CONFIG } from '@/lib/config';
+import { getContactPageData } from '@/lib/queries/contact';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ContactPageData {
-  hero?: { title?: string; subtitle?: string };
-  contactInfo?: {
-    phone?: { number?: string; hours?: string };
-    email?: { address?: string };
-    location?: { street?: string; note?: string };
-  };
-  form?: {
-    title?: string;
-    subtitle?: string;
-    responseTimeNote?: string;
-    successMessage?: string;
-  };
-  map?: {
-    showMap?: boolean;
-    embedUrl?: string;
-    coordinates?: { lat?: number; lng?: number };
-  };
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    ogImage?: { asset?: any; alt?: string };
-    canonicalUrl?: string;
-    noIndex?: boolean;
-  };
-}
-
-async function getContactPageData() {
-  return sanityFetch<ContactPageData>({
-    query: groq`*[_type == "contactPage" && _id == "contactPage"][0]{
-      hero {
-        title,
-        subtitle
-      },
-      contactInfo {
-        phone {
-          number,
-          hours
-        },
-        email {
-          address
-        },
-        location {
-          street,
-          note
-        }
-      },
-      form {
-        title,
-        subtitle,
-        responseTimeNote,
-        successMessage
-      },
-      map {
-        showMap,
-        embedUrl,
-        coordinates {
-          lat,
-          lng
-        }
-      },
-      seo {
-        metaTitle,
-        metaDescription,
-        keywords,
-        ogImage {
-          asset,
-          alt
-        },
-        canonicalUrl,
-        noIndex
-      }
-    }`,
-    tags: ['contactPage']
-  });
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getContactPageData();

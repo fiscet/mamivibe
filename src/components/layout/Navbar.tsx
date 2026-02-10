@@ -6,25 +6,11 @@ import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { NAV_ITEMS, BOOKING_CTA, SITE_CONFIG } from '@/lib/config';
-
-interface SiteSettingsData {
-  siteName?: string;
-  logoUrl?: string;
-  logoAlt?: string;
-  logoWidth?: number;
-  logoHeight?: number;
-}
-
-interface NavbarProps {
-  siteSettings?: SiteSettingsData | null;
-  hasBlogPosts?: boolean;
-  isDraftMode?: boolean;
-}
-
-interface NavItem {
-  href: string;
-  label: string;
-}
+import type {
+  SiteSettingsData,
+  NavbarProps,
+  NavItem
+} from '@/types/custom.types';
 
 const Navbar = ({
   siteSettings,

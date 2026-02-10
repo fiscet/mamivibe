@@ -2,7 +2,8 @@
 
 import { useActionState, useState } from 'react';
 import { FaStar, FaPaperPlane } from 'react-icons/fa';
-import { submitReview, ReviewFormState } from '@/app/reviews/actions';
+import { submitReview } from '@/app/reviews/actions';
+import type { ReviewFormState } from '@/types/custom.types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';

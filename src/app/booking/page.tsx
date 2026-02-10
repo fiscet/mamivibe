@@ -1,54 +1,10 @@
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { Metadata } from 'next';
-import { getServices } from './actions';
 import BookingFlow from './flow';
 import { SITE_CONFIG } from '@/lib/config';
+import { getBookingPageData, getServices } from '@/lib/queries/booking';
 
 export const dynamic = 'force-dynamic';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface BookingPageData {
-  hero?: { title?: string; subtitle?: string };
-  instructions?: string;
-  confirmationMessages?: { successTitle?: string; successMessage?: string };
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    ogImage?: { asset?: any; alt?: string };
-    canonicalUrl?: string;
-    noIndex?: boolean;
-  };
-}
-
-async function getBookingPageData() {
-  return sanityFetch<BookingPageData>({
-    query: groq`*[_type == "bookingPage" && _id == "bookingPage"][0]{
-      hero {
-        title,
-        subtitle
-      },
-      instructions,
-      confirmationMessages {
-        successTitle,
-        successMessage
-      },
-      seo {
-        metaTitle,
-        metaDescription,
-        keywords,
-        ogImage {
-          asset,
-          alt
-        },
-        canonicalUrl,
-        noIndex
-      }
-    }`,
-    tags: ['bookingPage']
-  });
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getBookingPageData();

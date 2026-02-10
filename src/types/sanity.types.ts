@@ -128,77 +128,6 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  slug?: Slug;
-  title?: string;
-  excerpt?: string;
-  publishedAt?: string;
-  heroImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  content?: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "normal" | "h2" | "h3" | "h4" | "blockquote";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }
-    | {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: string;
-        caption?: string;
-        _type: "image";
-        _key: string;
-      }
-  >;
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: Array<string>;
-    ogImage?: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    };
-    canonicalUrl?: string;
-    noIndex?: boolean;
-  };
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -312,6 +241,13 @@ export type BookingPage = {
   seo?: SeoFields;
 };
 
+export type PageReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "page";
+};
+
 export type PortableTextContent = Array<
   | {
       children?: Array<{
@@ -320,13 +256,26 @@ export type PortableTextContent = Array<
         _type: "span";
         _key: string;
       }>;
-      style?: "normal" | "h2" | "h3" | "h4" | "blockquote";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
+      style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "lead";
+      listItem?: "bullet" | "number" | "check";
+      markDefs?: Array<
+        | {
+            href?: string;
+            openInNewTab?: boolean;
+            _type: "link";
+            _key: string;
+          }
+        | {
+            reference?: PageReference;
+            _type: "internalLink";
+            _key: string;
+          }
+        | {
+            color?: "pink" | "violet" | "blue" | "green" | "red" | "gray";
+            _type: "textColor";
+            _key: string;
+          }
+      >;
       level?: number;
       _type: "block";
       _key: string;
@@ -338,9 +287,29 @@ export type PortableTextContent = Array<
       crop?: SanityImageCrop;
       alt?: string;
       caption?: string;
+      size?: "small" | "medium" | "large" | "full" | "original";
+      alignment?: "left" | "center" | "right";
+      float?: "none" | "left" | "right";
+      borderRadius?: "none" | "small" | "medium" | "large" | "full";
+      shadow?: boolean;
+      border?: boolean;
+      link?: string;
+      customClass?: string;
       _type: "image";
       _key: string;
     }
+  | ({
+      _key: string;
+    } & TableBlock)
+  | ({
+      _key: string;
+    } & CodeBlock)
+  | ({
+      _key: string;
+    } & CalloutBlock)
+  | ({
+      _key: string;
+    } & DividerBlock)
 >;
 
 export type ServicesPage = {
@@ -460,7 +429,22 @@ export type HomePage = {
         | "FaBaby"
         | "FaCalendarCheck"
         | "FaHeart"
-        | "FaStar";
+        | "FaStar"
+        | "FaGraduationCap"
+        | "FaShieldAlt"
+        | "FaUsers"
+        | "FaLightbulb"
+        | "FaCheckCircle"
+        | "FaStethoscope"
+        | "FaBook"
+        | "FaChalkboardTeacher"
+        | "FaClock"
+        | "FaVideo"
+        | "FaPhone"
+        | "FaEnvelope"
+        | "FaMapMarkerAlt"
+        | "FaBox"
+        | "FaAward";
       title?: string;
       description?: string;
       link?: string;
@@ -475,6 +459,101 @@ export type HomePage = {
   seo?: SeoFields;
 };
 
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  slug?: Slug;
+  title?: string;
+  excerpt?: string;
+  publishedAt?: string;
+  heroImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  content?: PortableTextContent;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: Array<string>;
+    ogImage?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    };
+    canonicalUrl?: string;
+    noIndex?: boolean;
+  };
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type DividerBlock = {
+  _type: "dividerBlock";
+  style?: "line" | "dotted" | "dashed" | "space";
+};
+
+export type CalloutBlock = {
+  _type: "calloutBlock";
+  type?: "info" | "warning" | "success" | "error" | "tip";
+  title?: string;
+  content?: string;
+};
+
+export type CodeBlock = {
+  _type: "codeBlock";
+  code?: string;
+  language?:
+    | "html"
+    | "css"
+    | "javascript"
+    | "typescript"
+    | "json"
+    | "plaintext";
+  renderAsHtml?: boolean;
+  showLineNumbers?: boolean;
+};
+
+export type TableBlock = {
+  _type: "tableBlock";
+  caption?: string;
+  rows?: Array<
+    {
+      _key: string;
+    } & TableRow
+  >;
+  hasHeaderRow?: boolean;
+  style?: "default" | "striped" | "bordered" | "compact";
+};
+
+export type TableRow = {
+  _type: "tableRow";
+  cells?: Array<
+    {
+      _key: string;
+    } & TableCell
+  >;
+};
+
+export type TableCell = {
+  _type: "tableCell";
+  content?: string;
+  isHeader?: boolean;
+};
+
 export type ValueCard = {
   _type: "valueCard";
   icon?:
@@ -487,7 +566,17 @@ export type ValueCard = {
     | "FaShieldAlt"
     | "FaUsers"
     | "FaLightbulb"
-    | "FaCheckCircle";
+    | "FaCheckCircle"
+    | "FaStethoscope"
+    | "FaBook"
+    | "FaChalkboardTeacher"
+    | "FaClock"
+    | "FaVideo"
+    | "FaPhone"
+    | "FaEnvelope"
+    | "FaMapMarkerAlt"
+    | "FaBox"
+    | "FaAward";
   title?: string;
   description?: string;
 };
@@ -610,18 +699,25 @@ export type AllSanitySchemaTypes =
   | Service
   | SanityImageCrop
   | SanityImageHotspot
-  | Page
-  | Slug
   | SiteSettings
   | FooterSettings
   | ContactPage
   | SeoFields
   | BookingPage
+  | PageReference
   | PortableTextContent
   | ServicesPage
   | AboutPage
   | CtaBlock
   | HomePage
+  | Page
+  | Slug
+  | DividerBlock
+  | CalloutBlock
+  | CodeBlock
+  | TableBlock
+  | TableRow
+  | TableCell
   | ValueCard
   | MediaTag
   | SanityImagePaletteSwatch

@@ -1,87 +1,16 @@
-import { sanityFetch, urlFor, client } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { PortableText, PortableTextBlock } from '@portabletext/react';
+import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
 import { SITE_CONFIG } from '@/lib/config';
+import type { PageProps } from '@/types/custom.types';
+import { getBlogPost, getAllBlogSlugs } from '@/lib/queries/blog';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  slug: { current: string };
-  excerpt?: string;
-  publishedAt?: string;
-  heroImage?: {
-    asset: {
-      _ref: string;
-    };
-    alt?: string;
-  };
-  content?: PortableTextBlock[];
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    ogImage?: {
-      asset: {
-        _ref: string;
-      };
-      alt?: string;
-    };
-    canonicalUrl?: string;
-    noIndex?: boolean;
-  };
-}
-
-interface PageProps {
-  params: Promise<{ slug: string }>;
-}
-
-async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  return sanityFetch<BlogPost | null>({
-    query: groq`*[_type == "page" && slug.current == $slug][0]{
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      heroImage {
-        asset,
-        alt
-      },
-      content,
-      seo {
-        metaTitle,
-        metaDescription,
-        keywords,
-        ogImage {
-          asset,
-          alt
-        },
-        canonicalUrl,
-        noIndex
-      }
-    }`,
-    params: { slug },
-    tags: ['blog', `blog-${slug}`]
-  });
-}
-
-// Use regular client for static params generation (build time)
-async function getAllBlogSlugs(): Promise<{ slug: string }[]> {
-  const posts = await client.fetch(
-    groq`*[_type == "page" && defined(slug.current)]{
-      "slug": slug.current
-    }`
-  );
-  return posts;
-}
 
 export async function generateStaticParams() {
   const posts = await getAllBlogSlugs();
@@ -173,7 +102,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="relative h-[40vh] md:h-[50vh] w-full">
             <Image
               src={urlFor(post.heroImage).width(1920).height(800).url()}
-              alt={post.heroImage.alt || post.title}
+              alt={post.heroImage.alt || post.title || 'Blog post'}
               fill
               className="object-cover"
               priority

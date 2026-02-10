@@ -124,55 +124,15 @@ const getTextColorClasses = (color: string | undefined): string => {
   }
 };
 
-// Define types for the custom blocks
-interface TableCell {
-  _key: string;
-  content?: string;
-  isHeader?: boolean;
-}
-
-interface TableRow {
-  _key: string;
-  cells?: TableCell[];
-}
-
-interface TableBlockValue {
-  caption?: string;
-  rows?: TableRow[];
-  hasHeaderRow?: boolean;
-  style?: string;
-}
-
-interface CodeBlockValue {
-  code?: string;
-  language?: string;
-  renderAsHtml?: boolean;
-  showLineNumbers?: boolean;
-}
-
-interface CalloutBlockValue {
-  type?: string;
-  title?: string;
-  content?: string;
-}
-
-interface DividerBlockValue {
-  style?: string;
-}
-
-interface ImageValue {
-  asset?: { _ref: string };
-  alt?: string;
-  caption?: string;
-  size?: string;
-  alignment?: string;
-  float?: string;
-  borderRadius?: string;
-  shadow?: boolean;
-  border?: boolean;
-  link?: string;
-  customClass?: string;
-}
+import type {
+  TableCell,
+  TableRow,
+  TableBlockValue,
+  CodeBlockValue,
+  CalloutBlockValue,
+  DividerBlockValue,
+  ImageValue
+} from '@/types/custom.types';
 
 export const portableTextComponents: PortableTextComponents = {
   block: {

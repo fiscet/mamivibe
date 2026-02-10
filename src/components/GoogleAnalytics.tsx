@@ -1,8 +1,6 @@
 import Script from 'next/script';
 
-interface GoogleAnalyticsProps {
-  measurementId: string | null | undefined;
-}
+import type { GoogleAnalyticsProps } from '@/types/custom.types';
 
 export default function GoogleAnalytics({
   measurementId

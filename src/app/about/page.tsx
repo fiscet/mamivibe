@@ -12,12 +12,12 @@ import {
   FaStar,
   FaQuoteLeft
 } from 'react-icons/fa';
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
-import type { ValueCard, AboutPage } from '@/types/sanity.types';
 import { SITE_CONFIG } from '@/lib/config';
+import { getAboutPage, getReviews } from '@/lib/queries/about';
+import type { AboutPage, ValueCard } from '@/types/sanity.types';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
@@ -36,86 +36,6 @@ const iconMap: Record<
   FaBook,
   FaStethoscope
 };
-
-async function getAboutPage() {
-  return sanityFetch<AboutPage>({
-    query: groq`*[_type == "aboutPage" && _id == "aboutPage"][0]{
-      hero {
-        title,
-        subtitle
-      },
-      bio {
-        profileImage,
-        experienceBadge {
-          number,
-          label
-        },
-        name,
-        content
-      },
-      credentials[] {
-        icon,
-        iconColor,
-        title,
-        description
-      },
-      values {
-        sectionTitle,
-        items[] {
-          icon,
-          title,
-          description
-        }
-      },
-      cta {
-        heading,
-        description,
-        primaryButton {
-          text,
-          link
-        },
-        secondaryButton {
-          text,
-          link
-        },
-        style
-      },
-      seo {
-        metaTitle,
-        metaDescription,
-        keywords,
-        ogImage {
-          asset,
-          alt
-        },
-        canonicalUrl,
-        noIndex
-      }
-    }`,
-    tags: ['aboutPage']
-  });
-}
-
-interface Review {
-  _id: string;
-  name: string;
-  content: string;
-  rating: number;
-  reviewDate?: string;
-}
-
-async function getReviews(maxCount: number = 3): Promise<Review[]> {
-  return sanityFetch<Review[]>({
-    query: groq`*[_type == "review" && approved == true] | order(reviewDate desc, _createdAt desc)[0...${maxCount}]{
-      _id,
-      name,
-      content,
-      rating,
-      reviewDate
-    }`,
-    tags: ['reviews']
-  });
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getAboutPage();

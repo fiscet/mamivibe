@@ -1,43 +1,12 @@
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { urlFor } from '@/lib/sanity.client';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { SITE_CONFIG } from '@/lib/config';
+import { getBlogPosts } from '@/lib/queries/blog';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  slug: { current: string };
-  excerpt?: string;
-  publishedAt?: string;
-  heroImage?: {
-    asset: {
-      _ref: string;
-    };
-    alt?: string;
-  };
-}
-
-async function getBlogPosts(): Promise<BlogPost[]> {
-  return sanityFetch<BlogPost[]>({
-    query: groq`*[_type == "page" && defined(publishedAt)] | order(publishedAt desc) {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      heroImage {
-        asset,
-        alt
-      }
-    }`,
-    tags: ['blog']
-  });
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'Blog - Hírek és cikkek';
@@ -99,7 +68,10 @@ export default async function BlogPage() {
                 key={post._id}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
-                <Link href={`/blog/${post.slug.current}`} className="block">
+                <Link
+                  href={`/blog/${post.slug?.current || ''}`}
+                  className="block"
+                >
                   {/* Image */}
                   {post.heroImage?.asset ? (
                     <div className="relative h-48 w-full">
@@ -108,7 +80,7 @@ export default async function BlogPage() {
                           .width(600)
                           .height(400)
                           .url()}
-                        alt={post.heroImage.alt || post.title}
+                        alt={post.heroImage.alt || post.title || 'Blog post'}
                         fill
                         className="object-cover"
                       />
