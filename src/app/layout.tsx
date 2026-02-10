@@ -7,9 +7,8 @@ import Footer from '@/components/layout/Footer';
 import CookieBanner from '@/components/CookieBanner';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { VisualEditing } from '@/components/VisualEditing';
-import { sanityFetch, urlFor } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
-import type { SiteSettingsData } from '@/types/custom.types';
+import { urlFor } from '@/lib/sanity.client';
+import { getSiteSettings, getBlogPostCount } from '@/lib/queries/layout';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,29 +35,6 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest'
 };
-
-async function getSiteSettings(): Promise<SiteSettingsData | null> {
-  return sanityFetch<SiteSettingsData | null>({
-    query: groq`*[_type == "siteSettings" && _id == "siteSettings"][0]{
-      siteName,
-      logo {
-        asset,
-        alt
-      },
-      logoWidth,
-      logoHeight,
-      googleAnalyticsId
-    }`,
-    tags: ['siteSettings']
-  });
-}
-
-async function getBlogPostCount(): Promise<number> {
-  return sanityFetch<number>({
-    query: groq`count(*[_type == "page" && defined(publishedAt)])`,
-    tags: ['blog']
-  });
-}
 
 export default async function RootLayout({
   children

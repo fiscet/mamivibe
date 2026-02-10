@@ -1,8 +1,9 @@
 import 'server-only';
 import { createClient, type QueryParams } from 'next-sanity';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 import { draftMode } from 'next/headers';
 import { projectId, dataset, apiVersion, token, studioUrl } from './sanity.config';
+import type { SanityImageAssetReference } from '@/types/sanity.types';
 
 // Base client for production queries
 export const client = createClient({
@@ -27,11 +28,21 @@ const previewClient = createClient({
   },
 });
 
-// Image URL builder
-const builder = imageUrlBuilder(client);
+// Image URL builder using the named export (not deprecated)
+const builder = createImageUrlBuilder(client);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function urlFor(source: any) {
+// Type for image sources that can be passed to urlFor
+// Based on @sanity/image-url SanityImageSource type
+export type SanityImageSource =
+  | { asset?: SanityImageAssetReference | { _ref: string; } | null; _type?: 'image'; }
+  | SanityImageAssetReference
+  | { _ref: string; }
+  | string;
+
+export function urlFor(source: SanityImageSource | null | undefined) {
+  if (!source) {
+    throw new Error('Image source is required');
+  }
   return builder.image(source);
 }
 

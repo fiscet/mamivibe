@@ -1,6 +1,6 @@
 import { sanityFetch } from '@/lib/sanity.client';
 import { groq } from 'next-sanity';
-import type { HomePageData, Review } from '@/types/custom.types';
+import type { HomePageData } from '@/types/custom.types';
 
 const homePageQuery = groq`*[_type == "homePage" && _id == "homePage"][0]{
   hero {
@@ -53,20 +53,18 @@ const homePageQuery = groq`*[_type == "homePage" && _id == "homePage"][0]{
   }
 }`;
 
-export async function getHomePage() {
-  return sanityFetch<HomePageData>({
-    query: homePageQuery,
-    tags: ['homePage']
-  });
-}
-
-export async function getReviews(maxCount: number = 3) {
-  return sanityFetch<Review[]>({
-    query: groq`*[_type == "review" && approved == true] | order(_createdAt desc)[0...${maxCount}]{
-      name,
-      content,
-      rating
-    }`,
-    tags: ['reviews']
-  });
+/**
+ * Fetches the home page data from Sanity CMS.
+ * @returns Home page data or null if not found
+ */
+export async function getHomePage(): Promise<HomePageData | null> {
+  try {
+    return await sanityFetch<HomePageData>({
+      query: homePageQuery,
+      tags: ['homePage']
+    });
+  } catch (error) {
+    console.error('Error fetching home page:', error);
+    return null;
+  }
 }

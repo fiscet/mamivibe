@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
+import Image from 'next/image';
 import {
   FaBaby,
   FaCalendarCheck,
@@ -28,7 +29,8 @@ import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
 import { SITE_CONFIG } from '@/lib/config';
 import type { ServiceCard, Review } from '@/types/custom.types';
-import { getHomePage, getReviews } from '@/lib/queries/home';
+import { getHomePage } from '@/lib/queries/home';
+import { getReviews } from '@/lib/queries/reviews';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
@@ -110,7 +112,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const pageData = await getHomePage();
   const maxReviews = pageData?.testimonials?.maxCount || 3;
-  const reviews: Review[] = await getReviews(maxReviews);
+  const reviews = (await getReviews({
+    maxCount: maxReviews,
+    includeId: false,
+    includeReviewDate: false,
+    sortByReviewDate: false
+  })) as Review[];
 
   // Extract data from Sanity
   const hero = pageData?.hero;
@@ -183,13 +190,16 @@ export default async function Home() {
                   <div className="absolute inset-0 bg-gradient-to-tr from-pink-200 to-violet-200 rounded-[2rem] rotate-3 transform shadow-2xl"></div>
                   <div className="absolute inset-0 bg-white rounded-[2rem] -rotate-3 transform border border-gray-100 flex items-center justify-center overflow-hidden">
                     {hero.heroImage ? (
-                      <img
+                      <Image
                         src={urlFor(hero.heroImage)
                           .width(800)
                           .height(800)
                           .url()}
                         alt={hero.title || ''}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        priority
+                        sizes="(max-width: 768px) 100vw, 50vw"
                       />
                     ) : (
                       <div className="text-center p-8">

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
+import Image from 'next/image';
 import {
   FaGraduationCap,
   FaHeart,
@@ -16,8 +17,10 @@ import { urlFor } from '@/lib/sanity.client';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '@/components/PortableTextComponents';
 import { SITE_CONFIG } from '@/lib/config';
-import { getAboutPage, getReviews } from '@/lib/queries/about';
+import { getAboutPage } from '@/lib/queries/about';
+import { getReviews } from '@/lib/queries/reviews';
 import type { AboutPage, ValueCard } from '@/types/sanity.types';
+import type { SanityReviewWithId } from '@/types/custom.types';
 
 // Enable revalidation for ISR (60 seconds cache)
 export const revalidate = 60;
@@ -89,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const pageData = await getAboutPage();
-  const reviews = await getReviews(3);
+  const reviews = (await getReviews({ maxCount: 3 })) as SanityReviewWithId[];
 
   const hero = pageData?.hero;
   const bio = pageData?.bio;
@@ -143,13 +146,16 @@ export default async function AboutPage() {
               <div className="md:w-1/2 relative">
                 <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl bg-gray-100 relative">
                   {bio.profileImage ? (
-                    <img
+                    <Image
                       src={urlFor(bio.profileImage)
                         .width(600)
                         .height(750)
                         .url()}
                       alt={bio.name || ''}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      priority
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-pink-200 to-violet-200">

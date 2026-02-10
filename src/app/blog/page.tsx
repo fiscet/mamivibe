@@ -83,6 +83,7 @@ export default async function BlogPage() {
                         alt={post.heroImage.alt || post.title || 'Blog post'}
                         fill
                         className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
                   ) : (
