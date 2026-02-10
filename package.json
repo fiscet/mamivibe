@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "lint:fix": "eslint --fix",
+    "sanity:typegen": "cd studio && sanity typegen generate"
   },
   "dependencies": {
     "@portabletext/react": "^6.0.2",
