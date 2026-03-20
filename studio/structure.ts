@@ -1,6 +1,6 @@
 import type { StructureBuilder, StructureResolver, StructureResolverContext } from 'sanity/structure';
 import { FaCalendarCheck, FaStar, FaTags, FaFileAlt, FaHome, FaUser, FaEnvelope, FaCalendarAlt, FaCog, FaColumns, FaGlobe } from 'react-icons/fa';
-import { map, combineLatest } from 'rxjs';
+import { map, combineLatest, Observable } from 'rxjs';
 import { singletonTypes } from './schemaTypes';
 
 // Singleton page configurations
@@ -48,13 +48,13 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
     'count(*[_type == "review" && approved == false])',
     {},
     { apiVersion: '2023-01-01' }
-  );
+  ) as Observable<number>;
 
   const newMessages$ = documentStore.listenQuery(
     'count(*[_type == "contactMessage" && status == "new"])',
     {},
     { apiVersion: '2023-01-01' }
-  );
+  ) as Observable<number>;
 
   return combineLatest([newReviews$, newMessages$]).pipe(
     map(([newReviews, newMessages]) => {
