@@ -1,8 +1,10 @@
+
 'use server';
 
 import { client as sanityClient } from "@/lib/sanity.client";
 import { groq } from "next-sanity";
 import { revalidatePath } from "next/cache";
+import { sendBookingConfirmationEmail, sendAdminBookingNotificationEmail } from "@/lib/emails";
 
 export async function createAppointment(prevState: unknown, formData: FormData) {
   const serviceId = formData.get("service") as string;
@@ -22,13 +24,13 @@ export async function createAppointment(prevState: unknown, formData: FormData) 
     const token = process.env.SANITY_API_TOKEN;
 
     if (!token) {
-      console.error("Missing SANITY_API_TOKEN");
+      console.error("Hiányzó SANITY_API_TOKEN");
       return { message: "Rendszerhiba: Hiányzó API Token." };
     }
 
     const clientWithToken = sanityClient.withConfig({ token });
 
-    await clientWithToken.create({
+    const createdAppointment = await clientWithToken.create({
       _type: "appointment",
       clientName,
       email,
@@ -44,10 +46,20 @@ export async function createAppointment(prevState: unknown, formData: FormData) 
     });
 
     revalidatePath("/booking");
+
+    try {
+      const appointment = await sanityClient.fetch(groq`*[_type == "appointment" && _id == $id][0]{..., service->{...}}`, { id: createdAppointment._id });
+      await sendBookingConfirmationEmail(appointment);
+      await sendAdminBookingNotificationEmail(appointment);
+    } catch (emailError) {
+      console.error("Hiba az e-mailek küldésekor:", emailError);
+      // Decide if you want to return a different message if emails fail
+    }
+
     return { message: "A foglalási igényedet sikeresen elküldted! Hamarosan kereslek.", success: true };
   } catch (e) {
-    console.error("Failed to create appointment:", e);
-    return { message: "Failed to create appointment. Please try again." };
+    console.error("Nem sikerült létrehozni a találkozót:", e);
+    return { message: "Nem sikerült létrehozni a találkozót. Kérlek, próbáld újra." };
   }
 }
 
