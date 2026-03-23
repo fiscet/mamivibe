@@ -1,6 +1,6 @@
 // Shared Sanity configuration - used by both frontend and studio
 export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '2ta16y4a';
-export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
+export const dataset = process.env.NEXT_PUBLIC_SANITY || 'development';
 export const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01';
 
 // Visual Editing configuration

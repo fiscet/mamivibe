@@ -5,27 +5,65 @@ import { groq } from 'next-sanity';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-async function getService(serviceId: string): Promise<Service> {
+type ResolvedService = Pick<Service, '_id' | 'title'>;
+
+type AppointmentServiceValue = Appointment['service'] | ResolvedService | null | undefined;
+
+async function getService(serviceId: string): Promise<Service | null> {
+  if (!serviceId) return null;
   const service = await sanityClient.fetch(groq`*[_type == "service" && _id == $serviceId][0]`, { serviceId });
   return service;
 }
 
-export async function sendBookingConfirmationEmail(appointment: Appointment) {
-  const { clientName, email, preferredDate, service: serviceRef } = appointment;
-  if (!serviceRef) return;
+function isServiceReference(service: AppointmentServiceValue): service is NonNullable<Appointment['service']> {
+  return Boolean(service && typeof service === 'object' && '_ref' in service && typeof service._ref === 'string');
+}
 
-  const service = await getService(serviceRef._ref);
+function isResolvedService(service: AppointmentServiceValue): service is ResolvedService {
+  return Boolean(service && typeof service === 'object' && '_id' in service && typeof service._id === 'string');
+}
+
+async function resolveAppointmentService(appointment: Appointment): Promise<ResolvedService | null> {
+  const serviceValue = appointment.service as AppointmentServiceValue;
+
+  if (isResolvedService(serviceValue)) {
+    return serviceValue;
+  }
+
+  if (isServiceReference(serviceValue)) {
+    const service = await getService(serviceValue._ref);
+
+    if (service?._id) {
+      return {
+        _id: service._id,
+        title: service.title
+      };
+    }
+  }
+
+  console.error('Service reference is missing or invalid');
+  return null;
+}
+
+export async function sendBookingConfirmationEmail(appointment: Appointment) {
+  const { clientName, email, preferredDate } = appointment;
+  const service = await resolveAppointmentService(appointment);
+
+  if (!service) {
+    return;
+  }
 
   try {
-    await resend.emails.send({
+    const res = await resend.emails.send({
       from: 'MamiVibe <noreply@mamivibe.hu>',
+      replyTo: 'mamivibezala@gmail.com',
       to: email || '',
       subject: 'MamiVibe - Foglalás visszaigazolása',
-      react: `<div>
+      html: `<div>
           <h2>Kedves ${clientName},</h2>
           <p>Köszönjük, hogy a MamiVibe-ot választottad. A foglalásod részletei:</p>
           <ul>
-            <li><strong>Szolgáltatás:</strong> ${service.title}</li>
+            <li><strong>Szolgáltatás:</strong> ${service?.title || 'N/A'}</li>
             <li><strong>Időpont:</strong> ${new Date(preferredDate || '').toLocaleString()}</li>
           </ul>
           <p>Hamarosan találkozunk!</p>
@@ -38,23 +76,26 @@ export async function sendBookingConfirmationEmail(appointment: Appointment) {
 }
 
 export async function sendAdminBookingNotificationEmail(appointment: Appointment) {
-  const { clientName, email, phone, preferredDate, service: serviceRef, notes } = appointment;
-  if (!serviceRef) return;
+  const { clientName, email, phone, preferredDate, notes } = appointment;
+  const service = await resolveAppointmentService(appointment);
 
-  const service = await getService(serviceRef._ref);
+  if (!service) {
+    return;
+  }
 
   try {
     await resend.emails.send({
       from: 'MamiVibe <noreply@mamivibe.hu>',
+      replyTo: 'mamivibezala@gmail.com',
       to: 'mamivibezala@gmail.com',
       subject: 'Új foglalás érkezett a MamiVibe-on keresztül',
-      react: `<div>
+      html: `<div>
           <h2>Új foglalás érkezett:</h2>
           <ul>
             <li><strong>Név:</strong> ${clientName}</li>
             <li><strong>E-mail:</strong> ${email}</li>
             <li><strong>Telefonszám:</strong> ${phone}</li>
-            <li><strong>Szolgáltatás:</strong> ${service.title}</li>
+            <li><strong>Szolgáltatás:</strong> ${service?.title || 'N/A'}</li>
             <li><strong>Időpont:</strong> ${new Date(preferredDate || '').toLocaleString()}</li>
             <li><strong>Megjegyzés:</strong> ${notes}</li>
           </ul>

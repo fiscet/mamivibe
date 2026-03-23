@@ -353,7 +353,9 @@ export default function BookingFlow({
               preselectedServiceId={selectedServiceId}
               selectedDate={selectedDate}
               selectedSlot={selectedSlot}
-              meetingType={preselectedMeetingType}
+              meetingType={
+                selectedService?.meetingType || preselectedMeetingType
+              }
             />
           </div>
         )}

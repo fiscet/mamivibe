@@ -15,7 +15,7 @@ export async function createAppointment(prevState: unknown, formData: FormData) 
   const meetingType = formData.get("meetingType") as string;
   const notes = formData.get("notes") as string;
 
-  if (!serviceId || !clientName || !email || !date || !meetingType) {
+  if (!serviceId || !clientName || !email || !date) {
     return { message: "Kérlek töltsd ki az összes kötelező mezőt." };
   }
 
