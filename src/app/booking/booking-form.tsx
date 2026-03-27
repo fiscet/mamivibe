@@ -70,6 +70,9 @@ export function BookingForm({
 
   return (
     <form action={formAction} className="mt-8 space-y-6">
+      {meetingType && (
+        <input type="hidden" name="meetingType" value={meetingType} />
+      )}
       {state?.message && !state.success && (
         <div className="p-3 bg-red-100 text-red-700 rounded-lg text-sm">
           {state.message}
@@ -177,12 +180,11 @@ export function BookingForm({
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaCalendar className="text-gray-400" />
             </div>
-            <input type="hidden" name="meetingType" value={meetingType || ''} />
             <input
               id="date"
               name="date"
               type={dateTimeString ? 'hidden' : 'datetime-local'}
-              defaultValue={dateTimeString}
+              value={dateTimeString || ''}
               required
               className={
                 dateTimeString
