@@ -20,12 +20,14 @@ export function BookingForm({
   services,
   preselectedServiceId,
   selectedDate,
-  selectedSlot
+  selectedSlot,
+  meetingType
 }: {
   services: Service[];
   preselectedServiceId?: string | null;
   selectedDate?: Date;
   selectedSlot?: string | null;
+  meetingType?: 'online' | 'in-person';
 }) {
   const [state, formAction, isPending] = useActionState(
     createAppointment,
@@ -68,6 +70,9 @@ export function BookingForm({
 
   return (
     <form action={formAction} className="mt-8 space-y-6">
+      {meetingType && (
+        <input type="hidden" name="meetingType" value={meetingType} />
+      )}
       {state?.message && !state.success && (
         <div className="p-3 bg-red-100 text-red-700 rounded-lg text-sm">
           {state.message}

@@ -13,8 +13,9 @@ export async function createAppointment(prevState: unknown, formData: FormData) 
   const phone = formData.get("phone") as string;
   const date = formData.get("date") as string; // This will now be ISO string or YYYY-MM-DDTHH:mm
   const notes = formData.get("notes") as string;
+  const meetingType = formData.get("meetingType") as "online" | "in-person" | null;
 
-  if (!serviceId || !clientName || !email || !date) {
+  if (!serviceId || !clientName || !email || !date || !meetingType) {
     return { message: "Kérlek töltsd ki az összes kötelező mezőt." };
   }
 
@@ -39,6 +40,7 @@ export async function createAppointment(prevState: unknown, formData: FormData) 
         _ref: serviceId
       },
       preferredDate: new Date(date).toISOString(),
+      meetingType,
       status: "pending",
       notes
     });

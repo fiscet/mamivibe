@@ -25,13 +25,15 @@ import { Service } from '@/types/sanity.types';
 type BookingFlowProps = {
   services: Service[];
   preselectedServiceId?: string;
+  preselectedMeetingType?: 'online' | 'in-person';
 };
 
 type Step = 'calendar' | 'service' | 'slots' | 'form';
 
 export default function BookingFlow({
   services,
-  preselectedServiceId
+  preselectedServiceId,
+  preselectedMeetingType
 }: BookingFlowProps) {
   const [step, setStep] = useState<Step>('calendar');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -47,6 +49,15 @@ export default function BookingFlow({
   >(preselectedServiceId);
 
   const selectedService = services.find((s) => s._id === selectedServiceId);
+
+  // Filter services by meeting type if preselected
+  const filteredServices = preselectedMeetingType
+    ? services.filter((s) => s.meetingType === preselectedMeetingType)
+    : services;
+
+  // Resolve meeting type: from selected service, or from preselection
+  const resolvedMeetingType =
+    selectedService?.meetingType ?? preselectedMeetingType;
 
   // Fetch monthly availability when month changes (or on mount)
   const handleMonthChange = async (month: Date) => {
@@ -257,7 +268,7 @@ export default function BookingFlow({
               <FaClipboardList className="text-pink-500" /> Válassz
               szolgáltatást
             </h3>
-            {services.length === 0 ? (
+            {filteredServices.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500 mb-4">
                   Jelenleg nincs elérhető szolgáltatás.
@@ -265,7 +276,7 @@ export default function BookingFlow({
               </div>
             ) : (
               <div className="w-full space-y-3">
-                {services.map((s) => (
+                {filteredServices.map((s) => (
                   <button
                     key={s._id}
                     onClick={() => handleServiceSelect(s._id)}
@@ -351,6 +362,7 @@ export default function BookingFlow({
               preselectedServiceId={selectedServiceId}
               selectedDate={selectedDate}
               selectedSlot={selectedSlot}
+              meetingType={resolvedMeetingType}
             />
           </div>
         )}
