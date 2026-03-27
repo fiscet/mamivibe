@@ -25,15 +25,13 @@ import { Service } from '@/types/sanity.types';
 type BookingFlowProps = {
   services: Service[];
   preselectedServiceId?: string;
-  preselectedMeetingType?: 'online' | 'in-person';
 };
 
 type Step = 'calendar' | 'service' | 'slots' | 'form';
 
 export default function BookingFlow({
   services,
-  preselectedServiceId,
-  preselectedMeetingType
+  preselectedServiceId
 }: BookingFlowProps) {
   const [step, setStep] = useState<Step>('calendar');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -353,9 +351,6 @@ export default function BookingFlow({
               preselectedServiceId={selectedServiceId}
               selectedDate={selectedDate}
               selectedSlot={selectedSlot}
-              meetingType={
-                selectedService?.meetingType || preselectedMeetingType
-              }
             />
           </div>
         )}

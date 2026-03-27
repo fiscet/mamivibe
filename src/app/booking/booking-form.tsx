@@ -20,14 +20,12 @@ export function BookingForm({
   services,
   preselectedServiceId,
   selectedDate,
-  selectedSlot,
-  meetingType
+  selectedSlot
 }: {
   services: Service[];
   preselectedServiceId?: string | null;
   selectedDate?: Date;
   selectedSlot?: string | null;
-  meetingType?: 'online' | 'in-person';
 }) {
   const [state, formAction, isPending] = useActionState(
     createAppointment,
@@ -177,12 +175,11 @@ export function BookingForm({
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaCalendar className="text-gray-400" />
             </div>
-            <input type="hidden" name="meetingType" value={meetingType || ''} />
             <input
               id="date"
               name="date"
               type={dateTimeString ? 'hidden' : 'datetime-local'}
-              defaultValue={dateTimeString}
+              value={dateTimeString || ''}
               required
               className={
                 dateTimeString
