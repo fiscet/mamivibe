@@ -29,6 +29,7 @@ export const NAV_ITEMS = [
   { href: '/', label: 'Kezdőlap' },
   { href: '/about', label: 'Rólam' },
   { href: '/services', label: 'Szolgáltatások' },
+  { href: '/professionals', label: 'Hasznos szakemberek' },
   { href: '/contact', label: 'Kapcsolat' },
 ] as const;
 

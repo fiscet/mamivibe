@@ -5,6 +5,7 @@ import { page } from './page';
 import { review } from './review';
 import { slot } from './slot';
 import { service } from './service';
+import { professional } from './professional';
 
 // Singleton page types
 import { homePage } from './singletons/homePage';
@@ -12,6 +13,7 @@ import { aboutPage } from './singletons/aboutPage';
 import { servicesPage } from './singletons/servicesPage';
 import { bookingPage } from './singletons/bookingPage';
 import { contactPage } from './singletons/contactPage';
+import { professionalsPage } from './singletons/professionalsPage';
 import { footerSettings } from './singletons/footerSettings';
 import { siteSettings } from './singletons/siteSettings';
 
@@ -35,6 +37,7 @@ export const schemaTypes = [
   servicesPage,
   bookingPage,
   contactPage,
+  professionalsPage,
 
   // Singleton settings
   footerSettings,
@@ -43,6 +46,7 @@ export const schemaTypes = [
   // Collection document types
   page, // Keep for blog/news if needed
   service,
+  professional,
   appointment,
   contactMessage,
   review,
@@ -50,4 +54,4 @@ export const schemaTypes = [
 ];
 
 // Export singleton document IDs for use in structure
-export const singletonTypes = ['homePage', 'aboutPage', 'servicesPage', 'bookingPage', 'contactPage', 'footerSettings', 'siteSettings'];
+export const singletonTypes = ['homePage', 'aboutPage', 'servicesPage', 'bookingPage', 'contactPage', 'professionalsPage', 'footerSettings', 'siteSettings'];
