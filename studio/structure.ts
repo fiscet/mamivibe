@@ -1,5 +1,5 @@
 import type { StructureBuilder, StructureResolver, StructureResolverContext } from 'sanity/structure';
-import { FaCalendarCheck, FaStar, FaTags, FaFileAlt, FaHome, FaUser, FaEnvelope, FaCalendarAlt, FaCog, FaColumns, FaGlobe } from 'react-icons/fa';
+import { FaCalendarCheck, FaStar, FaTags, FaFileAlt, FaHome, FaUser, FaEnvelope, FaCalendarAlt, FaCog, FaColumns, FaGlobe, FaUserMd } from 'react-icons/fa';
 import { map, combineLatest, Observable } from 'rxjs';
 import { singletonTypes } from './schemaTypes';
 
@@ -10,6 +10,7 @@ const singletonPages = [
   { type: 'servicesPage', title: 'Szolgáltatások', icon: FaTags, documentId: 'servicesPage' },
   { type: 'bookingPage', title: 'Időpontfoglalás', icon: FaCalendarAlt, documentId: 'bookingPage' },
   { type: 'contactPage', title: 'Kapcsolat', icon: FaEnvelope, documentId: 'contactPage' },
+  { type: 'professionalsPage', title: 'Hasznos szakemberek', icon: FaUserMd, documentId: 'professionalsPage' },
 ];
 
 // Singleton settings configurations
@@ -96,6 +97,11 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
             .title('Szolgáltatások')
             .icon(FaTags),
 
+          // Hasznos szakemberek - direct list
+          S.documentTypeListItem('professional')
+            .title('Hasznos szakemberek')
+            .icon(FaUserMd),
+
           // Other groups (Foglalások, Visszajelzések)
           ...groups.map((group) => {
             let displayTitle = group.title;
@@ -175,7 +181,8 @@ export const structure: StructureResolver = (S: StructureBuilder, context: Struc
               return !singletonTypes.includes(id || '') &&
                 !groupedTypes.includes(id || '') &&
                 id !== 'page' &&
-                id !== 'service';
+                id !== 'service' &&
+                id !== 'professional';
             }
           ),
         ]);
